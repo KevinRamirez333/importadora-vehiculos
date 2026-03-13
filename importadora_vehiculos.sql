@@ -9,4 +9,7 @@ CREATE TABLE usuarios (
   rol ENUM('ADMIN','SUPERVISOR','VENDEDOR') NOT NULL
 );
 
+ALTER TABLE usuarios
+ADD activo BOOLEAN DEFAULT TRUE;
+
 select * from usuarios;
