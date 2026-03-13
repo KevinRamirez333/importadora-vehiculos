@@ -33,12 +33,12 @@ const login = async () => {
       alt="Vue logo"
       class="logo"
       src="@/assets/importadora_vehiculos.jpeg"
-      width="125"
-      height="125"
+      width="200"
+      height="200"
     />
 
     <div class="wrapper">
-      <h1>Importadora de Vehículos</h1>
+      <h1 >Importadora de Vehículos</h1>
 
  
     </div>
@@ -99,5 +99,12 @@ button:hover {
 
 button:active {
   transform: scale(0.98);
+}
+.logo {
+  display: block;
+  margin: 0 auto 20px auto;
+}
+h1{
+  text-align: center;
 }
 </style>

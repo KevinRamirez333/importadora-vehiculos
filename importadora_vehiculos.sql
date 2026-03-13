@@ -8,3 +8,5 @@ CREATE TABLE usuarios (
   password_hash VARCHAR(255) NOT NULL,
   rol ENUM('ADMIN','SUPERVISOR','VENDEDOR') NOT NULL
 );
+
+select * from usuarios;

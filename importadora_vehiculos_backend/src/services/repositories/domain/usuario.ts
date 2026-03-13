@@ -4,4 +4,5 @@ export interface Usuario {
     email:string;
     password_hash: string;
     rol: 'ADMIN' | 'SUPERVISOR' | 'VENDEDOR';
+    activo: boolean;
 }

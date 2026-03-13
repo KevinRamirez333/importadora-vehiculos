@@ -17,6 +17,9 @@ async login(email: string, password: string) {
       throw new Error('Usuario no encontrado');
     }
 
+    if (!user.activo) {
+  throw new Error('Usuario desactivado');
+}
     const passwordMatch = await bcrypt.compare(password, user.password_hash);
 
     if (!passwordMatch) {
@@ -61,7 +64,8 @@ async login(email: string, password: string) {
       nombre,
       email,
       password_hash,
-      rol: rol as any
+      rol: rol as any,
+      activo: true
     });
 
     return {
@@ -69,4 +73,101 @@ async login(email: string, password: string) {
       id
     };
   }
+  async getUsuarios() {
+  return await this.usuarioRepository.findAll()
+}
+async updateUser(id: number, nombre: string, rol: string) {
+
+  if (!nombre || !rol) {
+    throw new Error("Nombre y rol son obligatorios")
+  }
+
+  await this.usuarioRepository.updateUser(id, nombre, rol)
+
+  return {
+    message: "Usuario actualizado correctamente"
+  }
+}
+async desactivarUsuario(id: number) {
+
+  await this.usuarioRepository.desactivarUsuario(id)
+
+  return {
+    message: "Usuario desactivado correctamente"
+  }
+}
+async activarUsuario(id:number){
+  await this.usuarioRepository.activarUsuario(id)
+
+  return {
+    message: "Usuario activado correctamente"
+  }
+}
+async getUsuarioById(id: number) {
+
+  if (!id) {
+    throw new Error("ID es requerido")
+  }
+
+  const usuario = await this.usuarioRepository.obtenerUsuarioPorId(id)
+
+  if (!usuario) {
+    throw new Error("Usuario no encontrado")
+  }
+
+  return usuario
+}
+async changePassword(
+  id:number,
+  currentPassword:string,
+  newPassword:string
+){
+
+const user = await this.usuarioRepository.obtenerUsuarioPorId(id)
+
+
+if(!user){
+  throw new Error("Usuario no encontrado")
+}
+
+const match = await bcrypt.compare(
+  currentPassword,
+  user.password_hash
+)
+
+if(!match){
+  throw new Error("Contraseña actual incorrecta")
+}
+
+const passwordHash = await bcrypt.hash(newPassword,10)
+
+await this.usuarioRepository.updatePassword(
+  id,
+  passwordHash
+)
+
+return{
+  message:"Contraseña actualizada correctamente"
+}
+
+}
+//Reinicio de contraseña desde usuario admin 
+async resetPassword(id:number,newPassword:string){
+
+if(newPassword.length < 6){
+  throw new Error("Contraseña debe tener mínimo 6 caracteres")
+}
+
+const passwordHash = await bcrypt.hash(newPassword,10)
+
+await this.usuarioRepository.updatePassword(
+  id,
+  passwordHash
+)
+
+return{
+  message:"Contraseña reseteada correctamente"
+}
+
+}
 }

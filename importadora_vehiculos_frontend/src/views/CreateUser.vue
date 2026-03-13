@@ -37,8 +37,8 @@ const crearUsuario = async () => {
 
     <!-- Navbar superior -->
     <nav class="navbar">
-      <button class="btn-volver" @click="router.push('/dashboard')">
-        ← Volver al Dashboard
+      <button class="btn-volver" @click="router.push('/usuarios')">
+        ← Volver
       </button>
     </nav>
 
