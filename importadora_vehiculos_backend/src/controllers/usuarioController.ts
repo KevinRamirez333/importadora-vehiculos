@@ -152,7 +152,7 @@ if (!currentPassword || !newPassword) {
   })
 }
   const userId = Number(req.params.id) // viene del JWT
-console.log(userId, currentPassword, newPassword)
+
   const result = await this.usuarioService.changePassword(
     userId,
     currentPassword,

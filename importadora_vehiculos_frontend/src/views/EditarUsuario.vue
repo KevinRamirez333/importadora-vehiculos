@@ -47,9 +47,9 @@ onMounted(cargarUsuario)
     <input v-model="nombre" placeholder="Nombre" />
 
     <select v-model="rol">
-      <option value="ADMIN">ADMIN</option>
-      <option value="SUPERVISOR">SUPERVISOR</option>
-      <option value="VENDEDOR">VENDEDOR</option>
+      <option value="1">ADMIN</option>
+      <option value="2">SUPERVISOR</option>
+      <option value="3">VENDEDOR</option>
     </select>
 
     <button class="btn-guardar" @click="actualizarUsuario">Guardar Cambios</button>

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { jwtDecode } from 'jwt-decode'
-import { computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
+
 const router = useRouter()
+const totalVehiculos = ref(0)
 
 const token = localStorage.getItem('token')
 let rol = ''
@@ -17,6 +19,19 @@ const logout = () => {
   localStorage.removeItem('token') // elimina el token
   router.push('/') // redirige al login
 }
+
+onMounted(async () => {
+  try {
+    const res = await fetch('http://localhost:3000/vehiculos') // ajusta URL
+    const data = await res.json()
+
+    totalVehiculos.value = data.length
+  } catch (error) {
+    console.error('Error cargando vehículos:', error)
+  }
+})
+
+
 
 const menuOptions = computed(() => {
   const baseOptions = [
@@ -71,7 +86,7 @@ const menuOptions = computed(() => {
         <div class="card">
           <span>🚗</span>
           <h3>Vehículos registrados</h3>
-          <p>0</p>
+          <p>{{ totalVehiculos }}</p>
         </div>
 
         <div class="card">

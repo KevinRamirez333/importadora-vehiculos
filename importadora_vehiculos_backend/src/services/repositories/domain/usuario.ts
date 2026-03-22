@@ -1,8 +1,9 @@
 export interface Usuario {
-    id?: number;
+    id_usuario?: number;
     nombre: string;
     email:string;
     password_hash: string;
-    rol: 'ADMIN' | 'SUPERVISOR' | 'VENDEDOR';
+    id_rol:number ;
     activo: boolean;
+    rol?:string;
 }

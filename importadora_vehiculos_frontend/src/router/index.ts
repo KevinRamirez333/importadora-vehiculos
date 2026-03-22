@@ -6,6 +6,7 @@ import CreateUser from '@/views/CreateUser.vue'
 import UsuariosSistema from '@/views/UsuariosSistema.vue'
 import EditarUsuario from '@/views/EditarUsuario.vue'
 import CambiarPassword from '@/views/CambiarPassword.vue'
+import VehiculosVista from '@/views/CreateVehiculo.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,6 +36,10 @@ const router = createRouter({
         {
     path: '/usuarios/cambiar/password',
     component: CambiarPassword,
+  },
+    {
+    path: '/vehiculos',
+    component: VehiculosVista,
   },
 
   ],

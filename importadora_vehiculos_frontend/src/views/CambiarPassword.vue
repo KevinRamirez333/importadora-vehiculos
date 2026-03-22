@@ -18,7 +18,7 @@ let userId = null
 
 if (token) {
   const decoded: any = jwtDecode(token)
-  userId = decoded.id
+  userId = decoded.id_usuario
 }
 
 const cambiarPassword = async () => {

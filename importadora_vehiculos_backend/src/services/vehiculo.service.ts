@@ -1,0 +1,63 @@
+import { VehiculoRepository } from "./repositories/vehiculo.repository";
+import { VehiculoRepositoryMySQL } from "./repositories/implements/mysql/vehiculo.repository.mysql";
+import { Vehiculo } from "./repositories/domain/vehiculo";
+import { MarcaRepositoryMySQL } from "./repositories/implements/mysql/marca.repository.mysql";
+import { EstadoRepositoryMySQL } from "./repositories/implements/mysql/estado.repository.mysql";
+
+export class VehiculoService{
+    private vehiculoRepo:VehiculoRepository=new VehiculoRepositoryMySQL()
+    private marcaRepo=new MarcaRepositoryMySQL()
+    private estadoRepo=new EstadoRepositoryMySQL()
+
+    async crearVehiculo(data:Vehiculo){
+        if(!data.vin){
+            throw new Error("VIN es requerido")
+        }
+        const existe= await this.vehiculoRepo.findByVin(data.vin)
+        if(existe){
+            throw new Error("El vehiculo ya existe")
+        }
+        const marca = await this.marcaRepo.findById(data.id_marca)
+        if(!marca) throw new Error("Marca no existe")
+
+        const estado = await this.estadoRepo.findById(data.id_estado)
+        if(!estado) throw new Error("Estado no existe")
+        
+        await this.vehiculoRepo.create(data)
+
+        return{message:"Vehiculo creado exitosamente"}
+
+    }
+    async listarVehiculos(){
+        return await this.vehiculoRepo.findAll()
+    }
+    async buscarPorVin(vin:string){
+        const vehiculo= await this.vehiculoRepo.findByVin(vin)
+
+        if(!vehiculo){
+            throw new Error("Vehiculo no encontrado")
+        }
+        return vehiculo
+    }
+    async editarVehiculo(vin:string,data:Vehiculo){
+        if (!vin){
+            throw new Error("VIN es requerido")
+        }
+
+        const busqueda= await this.vehiculoRepo.findByVin(vin);
+        if(!busqueda){
+            throw new Error("No existe datos asociados al numero de VIN")
+        }
+        await this.vehiculoRepo.update(vin,data)
+
+        return{message:"Vehiculo actualizado exitosamente"}
+    }
+    async darDeBaja(vin:string){
+        await this.vehiculoRepo.deactivate(vin)
+        return {message:"Vehiculo desactivado"}
+    }
+    async activar(vin:string){
+        await this.vehiculoRepo.activate(vin)
+        return{message:"Vehiculo activado"}
+    }
+}

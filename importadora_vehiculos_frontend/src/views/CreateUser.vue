@@ -43,7 +43,9 @@ const crearUsuario = async () => {
     </nav>
 
     <!-- Contenido -->
+     
     <div class="form-container">
+      <br>
       <h2>Crear Usuario</h2>
 
       <input v-model="nombre" placeholder="Nombre" />
@@ -51,9 +53,9 @@ const crearUsuario = async () => {
       <input v-model="password" type="password" placeholder="Contraseña" />
 
       <select v-model="rol" placeholder="Rol">
-        <option value="ADMIN">ADMIN</option>
-        <option value="VENDEDOR">VENDEDOR</option>
-        <option value="SUPERVISOR">SUPERVISOR</option>
+        <option value="1">ADMIN</option>
+        <option value="2">SUPERVISOR</option>
+        <option value="3">VENDEDOR</option>
       </select>
 
       <button @click="crearUsuario">

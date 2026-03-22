@@ -96,7 +96,7 @@ onMounted(cargarUsuarios)
       </thead>
 
       <tbody>
-        <tr v-for="u in usuarios" :key="u.id">
+        <tr v-for="u in usuarios" :key="u.id_usuario">
           <td>{{ u.nombre }}</td>
           <td>{{ u.email }}</td>
           <td>{{ u.rol }}</td>
@@ -108,13 +108,13 @@ onMounted(cargarUsuarios)
 
           <td>
             <div class="acciones">
-              <button class="btn-editar" @click="editarUsuario(u.id)">Editar</button>
-              <button class="btn-password" @click="abrirResetPassword(u.id)">Reset Password</button>
-              <button v-if="u.activo" class="btn-desactivar" @click="desactivarUsuario(u.id)">
+              <button class="btn-editar" @click="editarUsuario(u.id_usuario)">Editar</button>
+              <button class="btn-password" @click="abrirResetPassword(u.id_usuario)">Reset Password</button>
+              <button v-if="u.activo" class="btn-desactivar" @click="desactivarUsuario(u.id_usuario)">
                 Desactivar
               </button>
 
-              <button v-else class="btn-activar" @click="activarUsuario(u.id)">Activar</button>
+              <button v-else class="btn-activar" @click="activarUsuario(u.id_usuario)">Activar</button>
             </div>
           </td>
         </tr>

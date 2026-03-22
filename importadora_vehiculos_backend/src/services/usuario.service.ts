@@ -26,11 +26,11 @@ async login(email: string, password: string) {
       throw new Error('Contraseña incorrecta');
     }
 
-    
+    console.log(user)
     // Generar token
   const token = jwt.sign(
   {
-    id: user.id,
+    id_usuario: user.id_usuario,
     email: user.email,
     rol: user.rol
   },
@@ -64,7 +64,7 @@ async login(email: string, password: string) {
       nombre,
       email,
       password_hash,
-      rol: rol as any,
+      id_rol: Number(rol),
       activo: true
     });
 
