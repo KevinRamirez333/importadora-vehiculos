@@ -17,15 +17,25 @@ export class VehiculoController extends BaseController{
             res.status(400).send({message:error.message})
         }
     }
-    @GET()
-    public async listar(req:Request,res:Response){
-        try{
-            const data = await this.service.listarVehiculos()
-            res.send(data)
-        } catch(error:any){
-            res.status(500).send({message:error.message})
-        }
+@GET()
+public async listar(req: Request, res: Response) {
+  try {
+
+    const filtros = {
+      marca: req.query.marca ? Number(req.query.marca) : undefined,
+      modelo: req.query.modelo ? Number(req.query.modelo) : undefined,
+      anio: req.query.anio ? Number(req.query.anio) : undefined,
+      vin: req.query.vin ? String(req.query.vin) : undefined
     }
+
+    const data = await this.service.listarVehiculos(filtros)
+
+    res.send(data)
+
+  } catch (error: any) {
+    res.status(500).send({ message: error.message })
+  }
+}
     @GET()
     @route('/:vin')
     public async buscar(req:Request,res:Response){

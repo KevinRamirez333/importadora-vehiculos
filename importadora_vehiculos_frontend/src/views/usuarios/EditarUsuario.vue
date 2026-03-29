@@ -29,18 +29,17 @@ const actualizarUsuario = async () => {
   })
 
   alert('Usuario actualizado')
-  
 }
 
 onMounted(cargarUsuario)
 </script>
 
 <template>
+  <nav class="navbar">
+    <button class="btn-volver" @click="router.push('/usuarios')">← Volver</button>
+  </nav>
   <div class="form-container">
     <!-- Navbar superior -->
-    <nav class="navbar">
-      <button class="btn-volver" @click="router.push('/usuarios')">← Volver</button>
-    </nav>
 
     <h2>Editar Usuario</h2>
 

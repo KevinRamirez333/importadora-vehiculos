@@ -46,6 +46,7 @@ export class IngresoVehiculoService {
     if(!result){
         throw new Error("Ingreso no encontrado")
     }
+    return result;
   }
 async editarIngreso(id: number, data: any) {
 
@@ -69,6 +70,19 @@ async editarIngreso(id: number, data: any) {
 
   return {
     message: "Ingreso actualizado correctamente"
+  }
+}
+async anular(id:number){
+  await this.ingresoRepo.deactivate(id);
+
+  return{
+    message: "Ingreso de vehiculo anulado correctamente"
+  }
+}
+async activar(id:number){
+  await this.ingresoRepo.activate(id);
+  return{
+    message:"Ingreso de vehiculo activado correctamente"
   }
 }
 }

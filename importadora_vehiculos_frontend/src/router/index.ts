@@ -2,11 +2,20 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import Login from '@/components/Login.vue'
 import Dashboard from '@/components/Dashboard.vue'
-import CreateUser from '@/views/CreateUser.vue'
-import UsuariosSistema from '@/views/UsuariosSistema.vue'
-import EditarUsuario from '@/views/EditarUsuario.vue'
-import CambiarPassword from '@/views/CambiarPassword.vue'
-import VehiculosVista from '@/views/CreateVehiculo.vue'
+import CreateUser from '@/views/usuarios/CreateUser.vue'
+import UsuariosSistema from '@/views/usuarios/UsuariosSistema.vue'
+import EditarUsuario from '@/views/usuarios/EditarUsuario.vue'
+import CambiarPassword from '@/views/usuarios/CambiarPassword.vue'
+import CreateVehiculo from '@/views/vehiculos/CreateVehiculo.vue'
+import EditarVehiculo from '@/views/vehiculos/EditarVehiculo.vue'
+import ListaVehiculos from '@/views/vehiculos/ListaVehiculos.vue'
+import ListarMarcas from '@/views/marcas/ListarMarcas.vue'
+import CrearMarca from '@/views/marcas/CrearMarca.vue'
+import CrearModelo from '@/views/modelos/CrearModelo.vue'
+import ListaModelo from '@/views/modelos/ListaModelo.vue'
+import crearIngresoVehiculo from '@/views/ingresoVehiculos/crearIngresoVehiculo.vue'
+import ListaIngresoVehiculo from '@/views/ingresoVehiculos/ListaIngresoVehiculo.vue'
+import EditarIngresoVehiculo from '@/views/ingresoVehiculos/EditarIngresoVehiculo.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,8 +48,45 @@ const router = createRouter({
   },
     {
     path: '/vehiculos',
-    component: VehiculosVista,
+    component: ListaVehiculos,
   },
+      {
+    path: '/vehiculos/editar/:vin',
+    component: EditarVehiculo,
+  },
+
+        {
+    path: '/vehiculos/crear',
+    component: CreateVehiculo,
+  },
+  {
+  path: '/marcas',
+  component: ListarMarcas
+},
+{
+  path: '/marcas/crear',
+  component: CrearMarca
+},
+{
+  path: '/modelos/crear',
+  component: CrearModelo
+},
+{
+  path: '/modelos',
+  component: ListaModelo
+},
+{
+  path: '/ingresosVehiculos/crear',
+  component: crearIngresoVehiculo
+},
+{
+  path: '/ingresosVehiculos',
+  component: ListaIngresoVehiculo
+},
+{
+  path: '/ingresosVehiculos/editar/:id',
+  component: EditarIngresoVehiculo
+}
 
   ],
 })

@@ -33,7 +33,6 @@ export class IngresoVehiculoController extends BaseController {
   public async buscarPorId(req:Request,res:Response){
     try{
         const id = Number(req.params.id)
-
         const data = await this.service.BuscarPorId(id)
         res.send(data)
     } catch(error:any){
@@ -53,6 +52,28 @@ public async editar(req: Request, res: Response) {
 
   } catch (error: any) {
     res.status(400).send({ message: error.message })
+  }
+}
+@POST()
+@route('/anular/:id')
+public async anular(req:Request,res:Response){
+  try{
+    const id = Number(req.params.id)
+    const result = await this.service.anular(id)
+    res.send(result)
+  }catch(error:any){
+    res.status(400).send({message:error.message})
+  }
+}
+@POST()
+@route('/activar/:id')
+public async activar(req:Request,res:Response){
+  try{
+    const id=Number(req.params.id)
+    const result= await this.service.activar(id)
+    res.send(result)
+  } catch(error:any){
+    res.status(400).send({message:error.message})
   }
 }
 

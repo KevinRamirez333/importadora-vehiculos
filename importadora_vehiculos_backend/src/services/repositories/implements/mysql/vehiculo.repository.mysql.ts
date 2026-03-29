@@ -26,14 +26,45 @@ export class VehiculoRepositoryMySQL implements VehiculoRepository{
 
         return rows.length ? rows[0]:null
     }
-    async findAll():Promise<Vehiculo[]>{
-        const query =`select v.*, m.nombre as marca, e.nombre as estado
-        from vehiculo v
-        inner join marca m on v.id_marca =m.id_marca
-        inner join estado e on v.id_estado=e.id_estado`
+    async findAll(filtros?: any): Promise<any[]> {
 
-        const[rows]:any=await connector.query(query)
-        return rows
+  let query = `
+    SELECT v.*, m.nombre as marca, mo.nombre as modelo, e.nombre as estado
+    FROM vehiculo v
+    INNER JOIN marca m ON v.id_marca = m.id_marca
+    INNER JOIN modelo mo ON v.id_modelo = mo.id_modelo
+    INNER JOIN estado e ON v.id_estado = e.id_estado
+    WHERE 1=1
+  `
+
+  const params: any[] = []
+
+  // filtros dinámicos
+
+  if (filtros?.marca) {
+    query += " AND v.id_marca = ?"
+    params.push(filtros.marca)
+  }
+
+  if (filtros?.modelo) {
+    query += " AND v.id_modelo = ?"
+    params.push(filtros.modelo)
+  }
+
+  if (filtros?.anio) {
+    query += " AND v.anio = ?"
+    params.push(filtros.anio)
+  }
+
+  if (filtros?.vin) {
+    query += " AND v.vin = ?"
+    params.push(filtros.vin)
+  }
+
+  const [rows]: any = await connector.query(query, params)
+
+  return rows
+
     }
     async update(vin:string,vehiculo:Vehiculo):Promise<void>{
         const query=`update vehiculo

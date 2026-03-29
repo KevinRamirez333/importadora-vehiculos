@@ -1,0 +1,41 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const nombre = ref('')
+
+const crearMarca = async () => {
+  try {
+    await axios.post('http://localhost:3000/marcas', {
+      nombre: nombre.value,
+    })
+
+    alert('Marca creada')
+    nombre.value = ''
+  } catch (error: any) {
+    alert(error.response?.data?.message || 'Error')
+  }
+}
+</script>
+
+<template>
+  <nav class="navbar navbar-dark bg-dark px-3 mb-3">
+    <button class="btn btn-outline-light" @click="router.push('/marcas')">← Volver</button>
+  </nav>
+  <div class="container mt-4">
+    <h2 class="mb-4">Crear Marca</h2>
+
+    <div class="card p-4 shadow-sm">
+      <div class="mb-3">
+        <label class="form-label">Nombre de la Marca</label>
+        <input v-model="nombre" class="form-control" placeholder="Ej: Toyota" />
+      </div>
+
+      <button class="btn btn-success" @click="crearMarca">Guardar</button>
+
+      <button class="btn btn-secondary mt-2" @click="router.push('/marcas')">Volver</button>
+    </div>
+  </div>
+</template>

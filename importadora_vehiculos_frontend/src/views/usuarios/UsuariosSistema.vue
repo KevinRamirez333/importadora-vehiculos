@@ -8,6 +8,21 @@ const usuarios = ref<any[]>([])
 const mostrarModalPassword = ref(false)
 const usuarioSeleccionado = ref<number | null>(null)
 const nuevaPassword = ref('')
+const id=ref("")
+
+const buscarPorId=async ()=>{
+  try{
+const res=await axios.get(`http://localhost:3000/usuarios/${id.value}`)
+  usuarios.value=[res.data]
+  } catch(error:any){
+    alert("No existe ningun usuario con ese ID")
+  }
+
+}
+const limpiar =()=>{
+  id.value=""
+  cargarUsuarios()
+}
 const cargarUsuarios = async () => {
   try {
     const res = await axios.get('http://localhost:3000/usuarios')
@@ -76,17 +91,23 @@ onMounted(cargarUsuarios)
 </script>
 
 <template>
+  <nav class="navbar">
+    <button class="btn-volver" @click="router.push('/dashboard')">← Volver al dashboard</button>
+  </nav>
   <div class="page">
-    <nav class="navbar">
-      <button class="btn-volver" @click="router.push('/dashboard')">← Volver al dashboard</button>
-    </nav>
-    <br>
+    <br />
 
     <h2 class="titulo">Usuarios del Sistema</h2>
     <button class="btn-crear" @click="router.push('/usuarios/crear')">Crear Usuario</button>
+    <div class="mb-3 d-flex gap-2">
+      <input type="text" v-model="id" placeholder="Buscar por ID" />
+      <button class="btn btn-success" @click="buscarPorId">Buscar</button>
+      <button class="btn btn-warning" @click="limpiar">Limpiar</button>
+    </div>
     <table class="tabla">
       <thead>
         <tr>
+          <th>ID</th>
           <th>Nombre</th>
           <th>Email</th>
           <th>Rol</th>
@@ -97,6 +118,7 @@ onMounted(cargarUsuarios)
 
       <tbody>
         <tr v-for="u in usuarios" :key="u.id_usuario">
+          <td>{{ u.id_usuario }}</td>
           <td>{{ u.nombre }}</td>
           <td>{{ u.email }}</td>
           <td>{{ u.rol }}</td>
@@ -109,12 +131,20 @@ onMounted(cargarUsuarios)
           <td>
             <div class="acciones">
               <button class="btn-editar" @click="editarUsuario(u.id_usuario)">Editar</button>
-              <button class="btn-password" @click="abrirResetPassword(u.id_usuario)">Reset Password</button>
-              <button v-if="u.activo" class="btn-desactivar" @click="desactivarUsuario(u.id_usuario)">
+              <button class="btn-password" @click="abrirResetPassword(u.id_usuario)">
+                Reset Password
+              </button>
+              <button
+                v-if="u.activo"
+                class="btn-desactivar"
+                @click="desactivarUsuario(u.id_usuario)"
+              >
                 Desactivar
               </button>
 
-              <button v-else class="btn-activar" @click="activarUsuario(u.id_usuario)">Activar</button>
+              <button v-else class="btn-activar" @click="activarUsuario(u.id_usuario)">
+                Activar
+              </button>
             </div>
           </td>
         </tr>
@@ -122,32 +152,18 @@ onMounted(cargarUsuarios)
     </table>
   </div>
   <div v-if="mostrarModalPassword" class="modal-overlay">
+    <div class="modal">
+      <h3>Resetear contraseña</h3>
 
-  <div class="modal">
+      <input type="password" v-model="nuevaPassword" placeholder="Nueva contraseña" />
 
-    <h3>Resetear contraseña</h3>
+      <div class="modal-buttons">
+        <button class="btn-confirmar" @click="confirmarResetPassword">Guardar</button>
 
-    <input
-      type="password"
-      v-model="nuevaPassword"
-      placeholder="Nueva contraseña"
-    />
-
-    <div class="modal-buttons">
-
-      <button class="btn-confirmar" @click="confirmarResetPassword">
-        Guardar
-      </button>
-
-      <button class="btn-cancelar" @click="mostrarModalPassword = false">
-        Cancelar
-      </button>
-
+        <button class="btn-cancelar" @click="mostrarModalPassword = false">Cancelar</button>
+      </div>
     </div>
-
   </div>
-
-</div>
 </template>
 
 <style scoped>
@@ -323,70 +339,70 @@ onMounted(cargarUsuarios)
 }
 /* OVERLAY */
 
-.modal-overlay{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.5);
-display:flex;
-align-items:center;
-justify-content:center;
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* CAJA MODAL */
 
-.modal{
-background:white;
-padding:25px;
-border-radius:10px;
-width:350px;
-display:flex;
-flex-direction:column;
-gap:15px;
-box-shadow:0 4px 20px rgba(0,0,0,0.2);
+.modal {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* INPUT */
 
-.modal input{
-padding:12px;
-border-radius:6px;
-border:1px solid #ccc;
-font-size:14px;
+.modal input {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
 }
 
 /* BOTONES */
 
-.modal-buttons{
-display:flex;
-justify-content:space-between;
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
 }
 
-.btn-confirmar{
-background:#42b983;
-color:white;
-border:none;
-padding:8px 16px;
-border-radius:6px;
-cursor:pointer;
+.btn-confirmar {
+  background: #42b983;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-.btn-confirmar:hover{
-background:#36996f;
+.btn-confirmar:hover {
+  background: #36996f;
 }
 
-.btn-cancelar{
-background:#e74c3c;
-color:white;
-border:none;
-padding:8px 16px;
-border-radius:6px;
-cursor:pointer;
+.btn-cancelar {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-.btn-cancelar:hover{
-background:#c0392b;
+.btn-cancelar:hover {
+  background: #c0392b;
 }
 </style>

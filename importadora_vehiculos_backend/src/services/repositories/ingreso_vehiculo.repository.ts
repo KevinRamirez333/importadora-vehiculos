@@ -9,4 +9,8 @@ export interface IngresoVehiculoRepository {
   findById(id: number): Promise<IngresoVehiculo | null>
 
   update(id:number,data:IngresoVehiculo):Promise<void>
+
+  deactivate(id:number):Promise<void>
+
+  activate (id:number):Promise<void>
 }

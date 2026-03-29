@@ -65,12 +65,26 @@ create table ingreso_vehiculo(
   fecha date,
   id_cliente int null,
   valor_ingreso decimal(12,2),
+  estado_ingreso ENUM('ACTIVO','ANULADO') DEFAULT 'ACTIVO',
   constraint pk_id_ingreso primary key (id_ingreso),
-  constraint fk_vin_vehiculo foreign key (vin) references vehiculo(vin)
- -- constraint fk_id_cliente_ingreso foreign key (id_cliente) references cliente(id_cliente)
+  constraint fk_vin_vehiculo foreign key (vin) references vehiculo(vin),
+  constraint fk_id_cliente_ingreso foreign key (id_cliente) references cliente(id_cliente)
+);
+alter table ingreso_vehiculo
+add column estado_ingreso ENUM('ACTIVO','ANULADO') DEFAULT 'ACTIVO';
+create table cliente(
+  id_cliente int auto_increment,
+  nombre varchar(50),
+  nit varchar(20),
+  dpi varchar(20),
+  telefono varchar(20),
+  direccion varchar(30),
+activo boolean default true,
+constraint pk_id_cliente primary key (id_cliente)
 );
 
 
+select * from ingreso_vehiculo
 
 
 

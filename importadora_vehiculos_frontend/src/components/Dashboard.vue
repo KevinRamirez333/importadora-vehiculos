@@ -3,7 +3,6 @@ import { jwtDecode } from 'jwt-decode'
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
-
 const router = useRouter()
 const totalVehiculos = ref(0)
 
@@ -31,8 +30,6 @@ onMounted(async () => {
   }
 })
 
-
-
 const menuOptions = computed(() => {
   const baseOptions = [
     { name: 'Vehículos', route: '/vehiculos' },
@@ -45,6 +42,9 @@ const menuOptions = computed(() => {
     return [
       { name: 'Usuarios', route: '/usuarios' },
       { name: 'Importaciones', route: '/importaciones' },
+      { name: 'Marcas', route: '/marcas' },
+      { name: 'Modelos', route: '/modelos' },
+      { name: 'Ingresos de vehiculos', route: '/ingresosVehiculos' },
       ...baseOptions,
     ]
   }

@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
+
+const vinParam = route.params.vin as string
 
 // FORM
 const vin = ref('')
 const placa = ref('')
 const anio = ref<number | null>(null)
 const color = ref('')
-const precio_venta = ref<number | null>(null)
 const id_marca = ref<number | null>(null)
 const id_estado = ref<number | null>(null)
 const id_modelo = ref<number | null>(null)
@@ -20,125 +22,119 @@ const marcas = ref<any[]>([])
 const estados = ref<any[]>([])
 const modelos = ref<any[]>([])
 
-// Cargar marcas
+//  Cargar datos iniciales
 const cargarMarcas = async () => {
   const res = await axios.get('http://localhost:3000/marcas')
   marcas.value = res.data
 }
 
-// Cargar estados
 const cargarEstados = async () => {
   const res = await axios.get('http://localhost:3000/estados')
   estados.value = res.data
 }
 
-// Cargar modelos por marca
 const cargarModelos = async () => {
   if (!id_marca.value) return
 
-  const res = await axios.get(
-    `http://localhost:3000/modelos/marca/${id_marca.value}`
-  )
+  const res = await axios.get(`http://localhost:3000/modelos/marca/${id_marca.value}`)
 
   modelos.value = res.data
 }
 
-// Detectar cambio de marca
+// cuando cambia marca
 watch(id_marca, () => {
   id_modelo.value = null
   cargarModelos()
 })
 
-// Guardar vehículo
-const guardar = async () => {
-  try {
+//  cargar vehículo
+const cargarVehiculo = async () => {
+  const res = await axios.get(`http://localhost:3000/vehiculos/${vinParam}`)
 
+  const data = res.data
+
+  vin.value = data.vin
+  placa.value = data.placa
+  anio.value = data.anio
+  color.value = data.color
+
+  // primero marca
+  id_marca.value = data.id_marca
+
+  //carga modelos
+  await cargarModelos()
+
+  //ahora sí modelo
+  id_modelo.value = data.id_modelo
+
+  id_estado.value = data.id_estado
+}
+
+//  guardar cambios
+const actualizar = async () => {
+  try {
     const payload = {
-      vin: vin.value,
       placa: placa.value,
       anio: anio.value,
       color: color.value,
-      precio_venta: precio_venta.value,
       id_marca: id_marca.value,
       id_estado: id_estado.value,
-      id_modelo: id_modelo.value
+      id_modelo: id_modelo.value,
     }
 
-    await axios.post('http://localhost:3000/vehiculos', payload)
+    await axios.put(`http://localhost:3000/vehiculos/${vinParam}`, payload)
 
-    alert('Vehículo creado correctamente')
+    alert('Vehículo actualizado')
 
-    // limpiar formulario
-    vin.value = ''
-    placa.value = ''
-    anio.value = null
-    color.value = ''
-    precio_venta.value = null
-    id_marca.value = null
-    id_modelo.value = null
-    id_estado.value = null
-
+    router.push('/vehiculos')
   } catch (error: any) {
-    alert(error.response?.data?.message || 'Error al crear vehículo')
+    alert(error.response?.data?.message || 'Error al actualizar')
   }
 }
 
 onMounted(async () => {
   await cargarMarcas()
   await cargarEstados()
+  await cargarVehiculo()
 })
 </script>
 
 <template>
+  <nav class="navbar">
+    <button @click="router.push('/vehiculos')">← Volver</button>
+  </nav>
   <div class="page">
-
-    <!-- NAVBAR -->
-    <nav class="navbar">
-      <button @click="router.push('/dashboard')">
-        ← Volver
-      </button>
-    </nav>
-
-    <!-- FORMULARIO -->
     <div class="form-container">
-      <br>
-      <h2 class="titulo">Crear Vehículo</h2>
+      <h2>Editar Vehículo</h2>
 
       <!-- VIN -->
       <div class="campo">
         <label>VIN</label>
-        <input v-model="vin" placeholder="Ej: 1HGCM82633A123456" />
+        <input v-model="vin" disabled />
       </div>
 
       <!-- Placa -->
       <div class="campo">
         <label>Placa</label>
-        <input v-model="placa" placeholder="Ej: P123ABC" />
+        <input v-model="placa" />
       </div>
 
       <!-- Año -->
       <div class="campo">
         <label>Año</label>
-        <input type="number" v-model="anio" placeholder="Ej: 2024" />
+        <input type="number" v-model="anio" />
       </div>
 
       <!-- Color -->
       <div class="campo">
         <label>Color</label>
-        <input v-model="color" placeholder="Ej: Rojo" />
-      </div>
-
-      <!-- Precio -->
-      <div class="campo">
-        <label>Precio de Venta</label>
-        <input type="number" v-model="precio_venta" placeholder="Ej: 25000" />
+        <input v-model="color" />
       </div>
 
       <!-- Marca -->
       <div class="campo">
         <label>Marca</label>
         <select v-model="id_marca">
-          <option disabled value="">Seleccione una marca</option>
           <option v-for="m in marcas" :key="m.id_marca" :value="m.id_marca">
             {{ m.nombre }}
           </option>
@@ -149,7 +145,6 @@ onMounted(async () => {
       <div class="campo">
         <label>Modelo</label>
         <select v-model="id_modelo">
-          <option disabled value="">Seleccione un modelo</option>
           <option v-for="mo in modelos" :key="mo.id_modelo" :value="mo.id_modelo">
             {{ mo.nombre }}
           </option>
@@ -160,94 +155,45 @@ onMounted(async () => {
       <div class="campo">
         <label>Estado</label>
         <select v-model="id_estado">
-          <option disabled value="">Seleccione un estado</option>
           <option v-for="e in estados" :key="e.id_estado" :value="e.id_estado">
             {{ e.nombre }}
           </option>
         </select>
       </div>
 
-      <!-- BOTÓN -->
-      <button class="btn-guardar" @click="guardar">
-        Guardar Vehículo
-      </button>
+      <button @click="actualizar">Guardar Cambios</button>
     </div>
-
   </div>
 </template>
 
 <style scoped>
-
 .page {
-  display: flex;
-  flex-direction: column;
-}
-
-/* NAVBAR */
-.navbar {
-  padding: 15px 30px;
-  background-color: #2c3e50;
-}
-
-.navbar button {
-  background: #42b983;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-/* CONTENEDOR */
-.form-container {
   width: 420px;
-  margin: 40px auto;
+  margin: auto;
+  margin-top: 40px;
+}
+
+.form-container {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 15px;
 }
 
-/* TÍTULO */
-.titulo {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-/* CAMPOS */
 .campo {
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
-label {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-/* INPUTS */
 input,
 select {
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+  padding: 10px;
 }
 
-/* BOTÓN */
-.btn-guardar {
-  margin-top: 10px;
-  padding: 14px;
-  background-color: #42b983;
+button {
+  padding: 12px;
+  background: #3498db;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-weight: bold;
   cursor: pointer;
 }
-
-.btn-guardar:hover {
-  background-color: #36996f;
-}
-
 </style>

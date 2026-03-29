@@ -1,0 +1,107 @@
+<script setup lang="ts">
+import { ref, onMounted,computed } from 'vue'
+import axios from 'axios'
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
+
+const id = route.params.id
+
+const tipo_ingreso = ref('')
+const fecha = ref('')
+const id_cliente = ref<number | null>(null)
+const valor_ingreso = ref<number | null>(null)
+const clientes = ref<any[]>([])
+
+const formato = computed(() => {
+  return Number(valor_ingreso.value || 0).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+})
+
+const cargar = async () => {
+
+  const res = await axios.get(`http://localhost:3000/ingresos/${id}`)
+console.log(res.data)
+  
+    
+    const data = res.data
+
+    tipo_ingreso.value = data.tipo_ingreso
+    fecha.value = data.fecha.split('T')[0]
+    id_cliente.value = data.id_cliente
+    valor_ingreso.value = data.valor_ingreso
+  
+}
+
+const actualizar = async () => {
+  await axios.put(`http://localhost:3000/ingresos/${id}`, {
+    tipo_ingreso: tipo_ingreso.value,
+    fecha: fecha.value,
+    id_cliente: id_cliente.value,
+    valor_ingreso: valor_ingreso.value,
+  })
+    tipo_ingreso.value="",
+    fecha.value="",
+    id_cliente.value=null,
+    valor_ingreso.value=null,
+  alert('Actualizado correctamente')
+  router.push('/ingresosVehiculos')
+
+}
+
+const cargarClientes = async () => {
+  const res = await axios.get('http://localhost:3000/clientes')
+  clientes.value = res.data
+}
+
+onMounted(async () => {
+  await cargar()
+  await cargarClientes()
+})
+</script>
+
+<template>
+  <div class="container mt-4">
+    <h2>Editar Ingreso</h2>
+
+    <div class="card p-4">
+      <div class="mb-3">
+        <label>Tipo</label>
+        <select v-model="tipo_ingreso" class="form-select">
+          <option value="IMPORTACION">IMPORTACION</option>
+          <option value="COMPRA_LOCAL">COMPRA LOCAL</option>
+          <option value="RECIBIDO_COMO_PAGO">RECIBIDO COMO PAGO</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label>Fecha</label>
+        <input type="date" v-model="fecha" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label>Cliente</label>
+        <select v-model="id_cliente" class="form-select">
+          <option :value="null">Ninguno</option>
+          <option v-for="c in clientes" :key="c.id_cliente" :value="c.id_cliente">
+            {{ c.nombre }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label>Valor de ingreso</label>
+        <input type="number" v-model="valor_ingreso" class="form-control" />
+           <small>
+          {{ formato }}
+        </small>
+      </div>
+
+      <button class="btn btn-success" @click="actualizar">Guardar</button>
+      <button class="btn btn-secondary mt-2" @click="router.push('/ingresosVehiculos')">
+        Volver
+      </button>
+    </div>
+  </div>
+</template>

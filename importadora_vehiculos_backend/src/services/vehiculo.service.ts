@@ -28,9 +28,9 @@ export class VehiculoService{
         return{message:"Vehiculo creado exitosamente"}
 
     }
-    async listarVehiculos(){
-        return await this.vehiculoRepo.findAll()
-    }
+async listarVehiculos(filtros?: any) {
+  return await this.vehiculoRepo.findAll(filtros)
+}
     async buscarPorVin(vin:string){
         const vehiculo= await this.vehiculoRepo.findByVin(vin)
 
