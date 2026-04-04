@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import api from '@/services/api'
 
 const router = useRouter()
 
@@ -17,13 +18,13 @@ const vinBusqueda = ref('')
 
 // cargar datos
 const cargarVehiculos = async () => {
-  const res = await axios.get('http://localhost:3000/vehiculos')
+  const res = await api.get('/vehiculos')
   vehiculos.value = res.data
 }
 //buscar por ID
 const buscarPorId = async () => {
   try {
-    const res = await axios.get(`http://localhost:3000/vehiculos/${vinBusqueda.value}`)
+    const res = await api.get(`/vehiculos/${vinBusqueda.value}`)
 
     const data = res.data
 
@@ -33,26 +34,34 @@ const buscarPorId = async () => {
   }
 }
 const cargarClientes = async () => {
-  const res = await axios.get('http://localhost:3000/clientes')
+  const res = await api.get('/clientes')
   clientes.value = res.data
 }
 
 // crear
 const crear = async () => {
   try {
-    await axios.post('http://localhost:3000/ingresos', {
+    const res = await api.post('/ingresos', {
       vin: vin.value,
       tipo_ingreso: tipo_ingreso.value,
       fecha: fecha.value,
       id_cliente: id_cliente.value,
-      valor_ingreso: valor_ingreso.value,
+      valor_ingreso: tipo_ingreso.value ==='IMPORTACION'?0:valor_ingreso.value,
     })
+
+      const idIngreso = res.data.id
+      console.log(idIngreso)
+    if (tipo_ingreso.value === 'IMPORTACION') {
+      router.push(`/importaciones/crear/${idIngreso}`)
     ;((vin.value = ''),
       (tipo_ingreso.value = ''),
       (fecha.value = ''),
       (id_cliente.value = null),
-      (valor_ingreso.value = null),
-      alert('Ingreso registrado'))
+      (valor_ingreso.value = null))
+
+  
+    }
+    alert('Ingreso registrado')
   } catch (error: any) {
     alert(error.response?.data?.message || 'Error')
   }
@@ -118,7 +127,7 @@ onMounted(async () => {
         </select>
       </div>
 
-      <div class="mb-3">
+      <div class="mb-3" v-if="tipo_ingreso !=='IMPORTACION'">
         <label>Valor de ingreso</label>
         <input type="number" v-model="valor_ingreso" class="form-control" />
 

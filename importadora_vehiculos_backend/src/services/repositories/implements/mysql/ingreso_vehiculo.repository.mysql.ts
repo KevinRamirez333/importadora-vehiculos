@@ -61,6 +61,11 @@ export class IngresoVehiculoRepositoryMySQL implements IngresoVehiculoRepository
     id
   ])
   }
+  async actualizarValorIngreso(id: number, valor: number): Promise<void> {
+    const query = `update ingreso_vehiculo set valor_ingreso=? where id_ingreso=?`
+
+    await connector.query(query,[valor,id])
+  }
 
   async deactivate(id: number): Promise<void> {
     const query=`UPDATE ingreso_vehiculo

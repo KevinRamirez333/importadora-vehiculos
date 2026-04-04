@@ -17,7 +17,9 @@ export class IngresoVehiculoController extends BaseController {
       res.status(201).send(result)
 
     } catch (error: any) {
-      res.status(400).send({ message: error.message })
+
+      
+      res.status(500).send({ message: error.message })
     }
   }
 
@@ -36,7 +38,7 @@ export class IngresoVehiculoController extends BaseController {
         const data = await this.service.BuscarPorId(id)
         res.send(data)
     } catch(error:any){
-        res.status(400).send({message:error.message})
+        res.status(500).send({message:error.message})
     }
   }
   @PUT()
@@ -51,9 +53,10 @@ public async editar(req: Request, res: Response) {
     res.send(result)
 
   } catch (error: any) {
-    res.status(400).send({ message: error.message })
+    res.status(500).send({ message: error.message })
   }
 }
+
 @POST()
 @route('/anular/:id')
 public async anular(req:Request,res:Response){
@@ -62,7 +65,7 @@ public async anular(req:Request,res:Response){
     const result = await this.service.anular(id)
     res.send(result)
   }catch(error:any){
-    res.status(400).send({message:error.message})
+    res.status(500).send({message:error.message})
   }
 }
 @POST()
@@ -73,7 +76,7 @@ public async activar(req:Request,res:Response){
     const result= await this.service.activar(id)
     res.send(result)
   } catch(error:any){
-    res.status(400).send({message:error.message})
+    res.status(500).send({message:error.message})
   }
 }
 

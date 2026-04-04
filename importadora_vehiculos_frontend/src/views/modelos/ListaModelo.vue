@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import api from '@/services/api'
 
 const router = useRouter()
 
@@ -17,7 +18,7 @@ const id = ref('')
 const buscarPorId = async () => {
   try {
 
-    const res = await axios.get(`http://localhost:3000/modelos/${id.value}`)
+    const res = await api.get(`/modelos/${id.value}`)
     console.log(res)
     modelos.value = [res.data]
   } catch (error: any) {
@@ -33,12 +34,12 @@ const limpiar = () => {
 }
 // cargar datos
 const cargarModelos = async () => {
-  const res = await axios.get('http://localhost:3000/modelos')
+  const res = await api.get('/modelos')
   modelos.value = res.data
 }
 
 const cargarMarcas = async () => {
-  const res = await axios.get('http://localhost:3000/marcas')
+  const res = await api.get('/marcas')
   marcas.value = res.data
 }
 
@@ -51,13 +52,19 @@ const editar = (m: any) => {
 
 // guardasr
 const guardar = async (id: number) => {
-  await axios.put(`http://localhost:3000/modelos/${id}`, {
+  try{
+await api.put(`/modelos/${id}`, {
     nombre: nombreEditado.value,
     id_marca: marcaEditada.value,
   })
-
+  alert('Modelo actualizado')
   editandoId.value = null
   cargarModelos()
+  } catch(error:any){
+    alert(error.response?.data?.message || 'Error')
+  }
+  
+
 }
 
 // cancelar
@@ -67,12 +74,12 @@ const cancelar = () => {
 
 // activar/desactivar
 const desactivar = async (id: number) => {
-  await axios.post(`http://localhost:3000/modelos/desactivar/${id}`)
+  await api.post(`/modelos/desactivar/${id}`)
   cargarModelos()
 }
 
 const activar = async (id: number) => {
-  await axios.post(`http://localhost:3000/modelos/activar/${id}`)
+  await api.post(`/modelos/activar/${id}`)
   cargarModelos()
 }
 

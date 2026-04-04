@@ -72,6 +72,13 @@ async editarIngreso(id: number, data: any) {
     message: "Ingreso actualizado correctamente"
   }
 }
+    async actualizarValorIngreso(id:number,valor:number){
+        if(!id) throw new Error('ID requerido')
+        const ingreso = await this.ingresoRepo.findById(id)
+        if(!ingreso) throw new Error('Ingreso no encontrado')
+        
+        await this.ingresoRepo.actualizarValorIngreso(id,valor)
+    }
 async anular(id:number){
   await this.ingresoRepo.deactivate(id);
 

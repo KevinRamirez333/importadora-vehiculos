@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import api from '@/services/api'
 
 const router = useRouter()
 
@@ -12,13 +13,13 @@ const id = ref('')
 
 // cargar
 const cargarMarcas = async () => {
-  const res = await axios.get('http://localhost:3000/marcas')
+  const res = await api.get('/marcas')
   marcas.value = res.data
 }
 //Buscar por id
 const buscarPorId = async () => {
   try {
-    const res = await axios.get(`http://localhost:3000/marcas/${id.value}`)
+    const res = await api.get(`/marcas/${id.value}`)
 
     marcas.value = [res.data] 
   } catch (error: any) {
@@ -44,7 +45,7 @@ const editar = (m: any) => {
 
 // guardar
 const guardar = async (id: number) => {
-  await axios.put(`http://localhost:3000/marcas/${id}`, {
+  await api.put(`/marcas/${id}`, {
     nombre: nombreEditado.value,
   })
 
@@ -59,12 +60,12 @@ const cancelar = () => {
 
 // activar/desactivar
 const desactivar = async (id: number) => {
-  await axios.post(`http://localhost:3000/marcas/desactivar/${id}`)
+  await api.post(`/marcas/desactivar/${id}`)
   cargarMarcas()
 }
 
 const activar = async (id: number) => {
-  await axios.post(`http://localhost:3000/marcas/activar/${id}`)
+  await api.post(`/marcas/activar/${id}`)
   cargarMarcas()
 }
 

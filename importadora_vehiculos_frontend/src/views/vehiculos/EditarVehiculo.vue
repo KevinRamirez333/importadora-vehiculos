@@ -2,6 +2,7 @@
 import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 import { useRouter, useRoute } from 'vue-router'
+import api from '../../services/api'
 
 const router = useRouter()
 const route = useRoute()
@@ -24,19 +25,19 @@ const modelos = ref<any[]>([])
 
 //  Cargar datos iniciales
 const cargarMarcas = async () => {
-  const res = await axios.get('http://localhost:3000/marcas')
+  const res = await api.get('/marcas')
   marcas.value = res.data
 }
 
 const cargarEstados = async () => {
-  const res = await axios.get('http://localhost:3000/estados')
+  const res = await api.get('/estados')
   estados.value = res.data
 }
 
 const cargarModelos = async () => {
   if (!id_marca.value) return
 
-  const res = await axios.get(`http://localhost:3000/modelos/marca/${id_marca.value}`)
+  const res = await api.get(`/modelos/marca/${id_marca.value}`)
 
   modelos.value = res.data
 }
@@ -49,7 +50,7 @@ watch(id_marca, () => {
 
 //  cargar vehículo
 const cargarVehiculo = async () => {
-  const res = await axios.get(`http://localhost:3000/vehiculos/${vinParam}`)
+  const res = await api.get(`/vehiculos/${vinParam}`)
 
   const data = res.data
 
@@ -82,7 +83,7 @@ const actualizar = async () => {
       id_modelo: id_modelo.value,
     }
 
-    await axios.put(`http://localhost:3000/vehiculos/${vinParam}`, payload)
+    await api.put(`/vehiculos/${vinParam}`, payload)
 
     alert('Vehículo actualizado')
 

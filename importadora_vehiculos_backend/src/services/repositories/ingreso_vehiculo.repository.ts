@@ -10,7 +10,10 @@ export interface IngresoVehiculoRepository {
 
   update(id:number,data:IngresoVehiculo):Promise<void>
 
+  actualizarValorIngreso(id:number,valor:number):Promise<void>
+
   deactivate(id:number):Promise<void>
 
   activate (id:number):Promise<void>
+
 }

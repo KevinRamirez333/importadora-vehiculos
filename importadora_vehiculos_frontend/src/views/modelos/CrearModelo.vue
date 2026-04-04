@@ -2,6 +2,7 @@
 import { ref,onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import api from '@/services/api';
 
 const router=useRouter()
 
@@ -12,7 +13,7 @@ const marcas=ref<any[]>([])
 
 //cargar marcas
 const cargarMarcas = async () =>{
-    const res = await axios.get('http://localhost:3000/marcas')
+    const res = await api.get('/marcas')
     marcas.value=res.data
 }
 //crear modelo 
@@ -21,7 +22,7 @@ const crearModelo=async ()=>{
         if(!nombre.value||!id_marca.value){
             return alert("Todos los campos son requeridos")
         }
-        await axios.post('http://localhost:3000/modelos',{
+        await api.post('/modelos',{
             nombre:nombre.value,
             id_marca: id_marca.value
         })

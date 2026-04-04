@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import api from '@/services/api'
 
 const router = useRouter()
 const ingresos = ref<any[]>([])
@@ -10,7 +11,7 @@ const id = ref('')
 //Busqueda de ingreso de vehiculo por id
 const BuscarPorId = async () => {
   try{
-  const res = await axios.get(`http://localhost:3000/ingresos/${id.value}`)
+  const res = await api.get(`/ingresos/${id.value}`)
   ingresos.value = [res.data]  
   }catch(error:any){
     if (error.response) {
@@ -25,7 +26,7 @@ const BuscarPorId = async () => {
 
 //Cargar ingresos de vehiculos
 const cargar = async () => {
-  const res = await axios.get('http://localhost:3000/ingresos')
+  const res = await api.get('/ingresos')
   ingresos.value = res.data
 }
 
@@ -38,7 +39,7 @@ const anular = async (id: number) => {
   if (!confirm('¿Seguro que deseas anular este ingreso?')) return
 
   try {
-    await axios.post(`http://localhost:3000/ingresos/anular/${id}`)
+    await api.post(`/ingresos/anular/${id}`)
     cargar()
   } catch {
     alert('Error al anular')
@@ -47,7 +48,7 @@ const anular = async (id: number) => {
 const activar = async (id: number) => {
   if (!confirm('¿Reactivar ingreso?')) return
   try {
-    await axios.post(`http://localhost:3000/ingresos/activar/${id}`)
+    await api.post(`/ingresos/activar/${id}`)
     cargar()
   } catch {
     alert('Error al activar')

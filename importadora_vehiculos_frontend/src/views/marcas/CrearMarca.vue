@@ -2,13 +2,14 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import api from '@/services/api'
 
 const router = useRouter()
 const nombre = ref('')
 
 const crearMarca = async () => {
   try {
-    await axios.post('http://localhost:3000/marcas', {
+    await api.post('/marcas', {
       nombre: nombre.value,
     })
 

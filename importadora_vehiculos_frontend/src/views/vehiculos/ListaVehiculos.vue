@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import api from '../../services/api'
 
 const router = useRouter()
 
@@ -20,7 +21,7 @@ const modelos = ref<any[]>([])
 
 // Cargar datos iniciales
 const cargarVehiculos = async () => {
-  const res = await axios.get('http://localhost:3000/vehiculos')
+  const res = await api.get('/vehiculos')
   vehiculos.value = res.data
 }
 
@@ -34,7 +35,7 @@ const buscar = async () => {
     if (modelo.value) params.modelo = modelo.value
     if (anio.value) params.anio = anio.value
 
-    const res = await axios.get('http://localhost:3000/vehiculos', { params })
+    const res = await api.get('/vehiculos', { params })
 
     vehiculos.value = res.data
   } catch (error) {
@@ -54,7 +55,7 @@ const limpiar = async () => {
 
 // Cargar marcas
 const cargarMarcas = async () => {
-  const res = await axios.get('http://localhost:3000/marcas')
+  const res = await api.get('/marcas')
   marcas.value = res.data
 }
 
@@ -62,7 +63,7 @@ const cargarMarcas = async () => {
 const cargarModelos = async () => {
   if (!marca.value) return
 
-  const res = await axios.get(`http://localhost:3000/modelos/marca/${marca.value}`)
+  const res = await api.get(`/modelos/marca/${marca.value}`)
 
   modelos.value = res.data
 }
@@ -73,12 +74,12 @@ const editar = (vin: string) => {
 }
 
 const desactivar = async (vin: string) => {
-  await axios.post(`http://localhost:3000/vehiculos/desactivar/${vin}`)
+  await api.post(`/vehiculos/desactivar/${vin}`)
   cargarVehiculos()
 }
 
 const activar = async (vin: string) => {
-  await axios.post(`http://localhost:3000/vehiculos/activar/${vin}`)
+  await api.post(`/vehiculos/activar/${vin}`)
   cargarVehiculos()
 }
 

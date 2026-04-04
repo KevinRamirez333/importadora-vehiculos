@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import {jwtDecode} from "jwt-decode"
+import api from '@/services/api'
 
 
 const router = useRouter()
@@ -33,7 +34,7 @@ const cambiarPassword = async () => {
   }
 
   try {
-    await axios.patch(`http://localhost:3000/usuarios/cambiar/password/${userId}`, {
+    await api.patch(`/usuarios/cambiar/password/${userId}`, {
       currentPassword: passwordActual.value,
       newPassword: nuevaPassword.value,
     })

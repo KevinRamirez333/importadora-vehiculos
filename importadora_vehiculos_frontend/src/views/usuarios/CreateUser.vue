@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import api from '@/services/api'
 
 const nombre = ref('')
 const email = ref('')
@@ -12,7 +13,7 @@ const router = useRouter()
 
 const crearUsuario = async () => {
   try {
-    await axios.post('http://localhost:3000/usuarios', {
+    await api.post('/usuarios', {
       nombre: nombre.value,
       email: email.value,
       password: password.value,

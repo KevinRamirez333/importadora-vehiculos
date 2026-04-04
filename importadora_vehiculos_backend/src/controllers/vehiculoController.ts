@@ -14,7 +14,7 @@ export class VehiculoController extends BaseController{
             const result = await this.service.crearVehiculo(req.body)
             res.status(201).send(result)
         }catch(error:any){
-            res.status(400).send({message:error.message})
+            res.status(500).send({message:error.message})
         }
     }
 @GET()
@@ -48,7 +48,7 @@ public async listar(req: Request, res: Response) {
             const data = await this.service.buscarPorVin(vin)
             res.send(data)
         }catch(error:any){
-            res.status(404).send({message:error.message})
+            res.status(500).send({message:error.message})
         }
     }
     @PUT()
@@ -63,7 +63,7 @@ public async listar(req: Request, res: Response) {
             const result = await this.service.editarVehiculo(vin,req.body)
             res.send(result);
         }catch(error:any){
-            res.status(400).send({message:error.message})
+            res.status(500).send({message:error.message})
         }
     }
     @POST()
@@ -78,7 +78,7 @@ public async listar(req: Request, res: Response) {
             const result = await this.service.darDeBaja(vin)
             res.send(result)
         }catch(error:any){
-            res.status(400).send({message: error.message})
+            res.status(500).send({message: error.message})
         }
     }
     @POST()
@@ -93,7 +93,7 @@ public async listar(req: Request, res: Response) {
             const result = await this.service.activar(vin)
             res.send(result)
         }catch(error:any){
-            res.status(400).send({message:error.message})
+            res.status(500).send({message:error.message})
         }
     }
 

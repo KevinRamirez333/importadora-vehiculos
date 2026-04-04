@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter, useRoute } from 'vue-router'
+import api from '@/services/api'
 
 const router = useRouter()
 const route = useRoute()
@@ -13,7 +14,7 @@ const id = Number(route.params.id)
 
 const cargarUsuario = async () => {
   try {
-    const res = await axios.get(`http://localhost:3000/usuarios/${id}`)
+    const res = await api.get(`/usuarios/${id}`)
 
     nombre.value = res.data.nombre
     rol.value = res.data.rol
@@ -23,7 +24,7 @@ const cargarUsuario = async () => {
 }
 
 const actualizarUsuario = async () => {
-  await axios.put(`http://localhost:3000/usuarios/${id}`, {
+  await api.put(`/usuarios/${id}`, {
     nombre: nombre.value,
     rol: rol.value,
   })

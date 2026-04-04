@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import api from '@/services/api'
 import { jwtDecode } from 'jwt-decode'
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
@@ -21,8 +22,8 @@ const logout = () => {
 
 onMounted(async () => {
   try {
-    const res = await fetch('http://localhost:3000/vehiculos') // ajusta URL
-    const data = await res.json()
+    const res = await api.get('/vehiculos') // ajusta URL
+    const data = await res.data
 
     totalVehiculos.value = data.length
   } catch (error) {
@@ -45,6 +46,7 @@ const menuOptions = computed(() => {
       { name: 'Marcas', route: '/marcas' },
       { name: 'Modelos', route: '/modelos' },
       { name: 'Ingresos de vehiculos', route: '/ingresosVehiculos' },
+      {name:'Costo Vehiculos', route:'/vehiculo-costos'},
       ...baseOptions,
     ]
   }

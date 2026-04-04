@@ -19,7 +19,7 @@ export class ModeloController extends BaseController {
       res.status(201).send(result)
 
     } catch (error: any) {
-      res.status(400).send({ message: error.message })
+      res.status(500).send({ message: error.message })
     }
   }
 
@@ -41,7 +41,7 @@ export class ModeloController extends BaseController {
         const modelo=await this.service.buscarPorId(id)
         res.send(modelo)
     }catch(error:any){
-        res.status(400).send({message:error.message})
+        res.status(500).send({message:error.message})
     }
   }
 
@@ -53,7 +53,7 @@ export class ModeloController extends BaseController {
         const data = await this.service.listarPorMarca(id)
         res.send(data)
     } catch(error:any){
-        res.status(400).send({message:error.message})
+        res.status(500).send({message:error.message})
     }
     
   }
@@ -66,7 +66,7 @@ export class ModeloController extends BaseController {
         const data= await this.service.editarModelo(id,req.body.nombre,req.body.id_marca)
         res.send(data)
     } catch(error:any){
-        res.status(400).send({message:error.message})
+        res.status(500).send({message:error.message})
     }
   }
   @POST()
@@ -78,7 +78,7 @@ export class ModeloController extends BaseController {
         const result= await this.service.desactivar(id)
         res.send(result)
     }catch(error:any){
-        res.status(400).send({message:error.message})
+        res.status(500).send({message:error.message})
     }
   }
   @POST()
@@ -90,7 +90,7 @@ export class ModeloController extends BaseController {
         const result= await this.service.activar(id)
         res.send(result)
     }catch(error:any){
-        res.status(400).send({message:error.message})
+        res.status(500).send({message:error.message})
     }
   }
 }

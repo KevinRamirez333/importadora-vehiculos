@@ -2,6 +2,7 @@
 import { ref, onMounted,computed } from 'vue'
 import axios from 'axios'
 import { useRoute, useRouter } from 'vue-router'
+import api from '@/services/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -23,7 +24,7 @@ const formato = computed(() => {
 
 const cargar = async () => {
 
-  const res = await axios.get(`http://localhost:3000/ingresos/${id}`)
+  const res = await api.get(`/ingresos/${id}`)
 console.log(res.data)
   
     
@@ -37,7 +38,7 @@ console.log(res.data)
 }
 
 const actualizar = async () => {
-  await axios.put(`http://localhost:3000/ingresos/${id}`, {
+  await api.put(`/ingresos/${id}`, {
     tipo_ingreso: tipo_ingreso.value,
     fecha: fecha.value,
     id_cliente: id_cliente.value,
@@ -53,7 +54,7 @@ const actualizar = async () => {
 }
 
 const cargarClientes = async () => {
-  const res = await axios.get('http://localhost:3000/clientes')
+  const res = await api.get('/clientes')
   clientes.value = res.data
 }
 
@@ -90,7 +91,7 @@ onMounted(async () => {
           </option>
         </select>
       </div>
-      <div class="mb-3">
+      <div class="mb-3" v-if="tipo_ingreso!=='IMPORTACION'">
         <label>Valor de ingreso</label>
         <input type="number" v-model="valor_ingreso" class="form-control" />
            <small>

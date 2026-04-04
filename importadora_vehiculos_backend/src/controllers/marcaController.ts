@@ -15,7 +15,7 @@ export class MarcaController extends BaseController{
 
             res.status(201).send(result)
         } catch(error:any){
-            res.status(400).send({message: error.message})
+            res.status(500).send({message: error.message})
         }
     }
     @GET()
@@ -36,7 +36,7 @@ export class MarcaController extends BaseController{
             const marca = await this.marcaService.buscarPorId(id)
             res.send(marca)
         }catch(error:any){
-            res.status(404).send({message:error.message})
+            res.status(500).send({message:error.message})
         }
     }
     @PUT()
@@ -49,7 +49,7 @@ export class MarcaController extends BaseController{
             const result = await this.marcaService.editarMarca(id,nombre)
             res.send(result)      
         }catch(error:any){
-            res.status(404).send({message:error.message})
+            res.status(500).send({message:error.message})
         }
     }
     @POST()
@@ -61,7 +61,7 @@ export class MarcaController extends BaseController{
             const result = await this.marcaService.darDeBaja(id)
             res.send(result)
         }catch(error:any){
-            res.status(400).send({message:error.message})
+            res.status(500).send({message:error.message})
         }
     }
     @POST()
@@ -73,7 +73,7 @@ export class MarcaController extends BaseController{
             const result= await this.marcaService.activar(id)
             res.send(result)
         }catch(error:any){
-            res.status(400).send({message:error.message})
+            res.status(500).send({message:error.message})
         }
     }
 }

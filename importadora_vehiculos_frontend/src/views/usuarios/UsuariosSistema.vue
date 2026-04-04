@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import api from '@/services/api'
 
 const router = useRouter()
 const usuarios = ref<any[]>([])
@@ -12,7 +13,7 @@ const id=ref("")
 
 const buscarPorId=async ()=>{
   try{
-const res=await axios.get(`http://localhost:3000/usuarios/${id.value}`)
+const res=await api.get(`/usuarios/${id.value}`)
   usuarios.value=[res.data]
   } catch(error:any){
     alert("No existe ningun usuario con ese ID")
@@ -25,7 +26,7 @@ const limpiar =()=>{
 }
 const cargarUsuarios = async () => {
   try {
-    const res = await axios.get('http://localhost:3000/usuarios')
+    const res = await api.get('/usuarios')
     usuarios.value = res.data
   } catch (error) {
     alert('Error cargando usuarios')
@@ -36,7 +37,7 @@ const desactivarUsuario = async (id: number) => {
   if (!confirm('¿Seguro que deseas desactivar este usuario?')) return
 
   try {
-    await axios.post(`http://localhost:3000/usuarios/${id}/desactivar`)
+    await api.post(`/usuarios/${id}/desactivar`)
     cargarUsuarios()
   } catch {
     alert('Error desactivando usuario')
@@ -46,7 +47,7 @@ const activarUsuario = async (id: number) => {
   if (!confirm('¿Seguro que deseas activar este usuario?')) return
 
   try {
-    await axios.post(`http://localhost:3000/usuarios/${id}/activar`)
+    await api.post(`/usuarios/${id}/activar`)
     cargarUsuarios()
   } catch {
     alert('Error activando usuario')
@@ -71,8 +72,8 @@ const confirmarResetPassword = async () => {
 
   try {
 
-    await axios.patch(
-      `http://localhost:3000/usuarios/reset/password/${usuarioSeleccionado.value}`,
+    await api.patch(
+      `/usuarios/reset/password/${usuarioSeleccionado.value}`,
       {
         newPassword: nuevaPassword.value
       }

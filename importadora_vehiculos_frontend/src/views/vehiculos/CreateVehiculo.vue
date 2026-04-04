@@ -2,6 +2,7 @@
 import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import api from '@/services/api'
 
 const router = useRouter()
 
@@ -22,13 +23,13 @@ const modelos = ref<any[]>([])
 
 // Cargar marcas
 const cargarMarcas = async () => {
-  const res = await axios.get('http://localhost:3000/marcas')
+  const res = await api.get('/marcas')
   marcas.value = res.data
 }
 
 // Cargar estados
 const cargarEstados = async () => {
-  const res = await axios.get('http://localhost:3000/estados')
+  const res = await api.get('/estados')
   estados.value = res.data
 }
 
@@ -36,8 +37,8 @@ const cargarEstados = async () => {
 const cargarModelos = async () => {
   if (!id_marca.value) return
 
-  const res = await axios.get(
-    `http://localhost:3000/modelos/marca/${id_marca.value}`
+  const res = await api.get(
+    `/modelos/marca/${id_marca.value}`
   )
 
   modelos.value = res.data
@@ -64,7 +65,7 @@ const guardar = async () => {
       id_modelo: id_modelo.value
     }
 
-    await axios.post('http://localhost:3000/vehiculos', payload)
+    await api.post('/vehiculos', payload)
 
     alert('Vehículo creado correctamente')
 

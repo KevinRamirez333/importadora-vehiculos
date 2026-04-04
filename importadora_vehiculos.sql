@@ -83,8 +83,27 @@ activo boolean default true,
 constraint pk_id_cliente primary key (id_cliente)
 );
 
+create table importacion(
+id_importacion int auto_increment,
+id_ingreso int,
+costo_dolares decimal(12,2),
+tipo_cambio decimal(12,2),
+pais_origen varchar(20),
+estado ENUM('ACTIVO','ANULADO') DEFAULT 'ACTIVO',
+constraint pk_id_importacion primary key(id_importacion),
+constraint fk_id_ingreso foreign key (id_ingreso) references ingreso_vehiculo(id_ingreso)
+);
 
-select * from ingreso_vehiculo
-
+create table vehiculo_costo(
+id_costo int auto_increment,
+vin varchar(20),
+tipo_costo enum('TRASPASO','TALLER','IMPUESTO','PLACAS','TRAMITES','OTRO'),
+descripcion varchar(100),
+monto decimal(12,2),
+fecha date,
+estado enum('ACTIVO','ANULADO'),
+constraint pk_id_costo primary key(id_costo),
+constraint fk_vin_costo foreign key (vin) references vehiculo(vin)
+);
 
 

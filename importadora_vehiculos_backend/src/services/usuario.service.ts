@@ -26,7 +26,6 @@ async login(email: string, password: string) {
       throw new Error('Contraseña incorrecta');
     }
 
-    console.log(user)
     // Generar token
   const token = jwt.sign(
   {

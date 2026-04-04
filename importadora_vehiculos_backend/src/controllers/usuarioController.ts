@@ -28,7 +28,7 @@ export class UsuarioController extends BaseController {
 
     } catch (error) {
       const err = error as Error;
-      res.status(401).send({ message: err.message });
+      res.status(500).send({ message: err.message });
     }
   }
   // Obtener usuario por ID
@@ -45,7 +45,7 @@ public async getUsuarioById(req: Request, res: Response) {
 
   } catch (error) {
     const err = error as Error
-    res.status(404).send({ message: err.message })
+    res.status(500).send({ message: err.message })
   }
 }
 
@@ -72,7 +72,7 @@ public async getUsuarioById(req: Request, res: Response) {
 
     } catch (error) {
       const err = error as Error;
-      res.status(400).send({ message: err.message });
+      res.status(500).send({ message: err.message });
     }
   }
   //Listar usuarios
@@ -84,7 +84,7 @@ public async getUsuarios(req: Request, res: Response) {
   }
 catch (error) {
       const err = error as Error;
-      res.status(400).send({ message: err.message });
+      res.status(500).send({ message: err.message });
     }
   
 }
@@ -107,7 +107,7 @@ const id = Number(req.params.id)
 }
   catch (error) {
       const err = error as Error;
-      res.status(400).send({ message: err.message });
+      res.status(500).send({ message: err.message });
     }
 }
 //Desactivar usuario
@@ -123,7 +123,7 @@ const id = Number(req.params.id)
 }
   catch (error) {
       const err = error as Error;
-      res.status(400).send({ message: err.message });
+      res.status(500).send({ message: err.message });
     }
   
 }
@@ -138,7 +138,7 @@ public async activarUsuario(req: Request, res: Response){
   }
   catch(error){
     const err = error as Error;
-    res.status(400).send({message: err.message});
+    res.status(500).send({message: err.message});
   }
 }
 @route('/cambiar/password/:id')
@@ -163,7 +163,7 @@ if (!currentPassword || !newPassword) {
 }
   catch(error){
     const err = error as Error;
-    res.status(400).send({message: err.message});
+    res.status(500).send({message: err.message});
   }
   
 }
@@ -184,7 +184,7 @@ try{
 
   catch(error){
     const err = error as Error;
-    res.status(400).send({message: err.message});
+    res.status(500).send({message: err.message});
   }
 }
 }
