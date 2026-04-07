@@ -50,7 +50,7 @@ const crear = async () => {
     })
 
       const idIngreso = res.data.id
-      console.log(idIngreso)
+      
     if (tipo_ingreso.value === 'IMPORTACION') {
       router.push(`/importaciones/crear/${idIngreso}`)
     ;((vin.value = ''),

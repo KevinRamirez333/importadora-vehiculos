@@ -20,6 +20,8 @@ import CrearImportacion from '@/views/importaciones/crearImportacion.vue'
 import ListaImportaciones from '@/views/importaciones/ListaImportaciones.vue'
 import EditarImportacion from '@/views/importaciones/EditarImportacion.vue'
 import ListaVehiculoCostos from '@/views/costoVehiculos/ListaVehiculoCostos.vue'
+import CrearVehiculoCosto from '@/views/costoVehiculos/CrearVehiculoCosto.vue'
+import EditarVehiculoCosto from '@/views/costoVehiculos/EditarVehiculoCosto.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -106,6 +108,14 @@ const router = createRouter({
 {
   path: '/vehiculo-costos',
   component: ListaVehiculoCostos
+},
+{
+  path: '/vehiculo-costos/crear',
+  component: CrearVehiculoCosto
+},
+{
+  path: '/vehiculo-costos/editar/:id',
+  component: EditarVehiculoCosto
 },
   ],
 })

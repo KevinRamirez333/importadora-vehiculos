@@ -47,11 +47,11 @@ onMounted(cargar)
       </div>
       <div class="mb-3">
         <label>Pais Origen</label>
-        <input type="text" class="form-contro" v-model="pais_origen" />
+        <input type="text" class="form-control" v-model="pais_origen" />
       </div>
       <div class="mb-3">
         <label>Tipo Cambio</label>
-        <input type="number" class="form" v-model="tipo_cambio" />
+        <input type="number" class="form-control" v-model="tipo_cambio" />
       </div>
       <div class="mb-3">
         <label>Costo en Dolares</label>

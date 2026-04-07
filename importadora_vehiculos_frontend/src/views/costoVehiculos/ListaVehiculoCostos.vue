@@ -53,6 +53,10 @@ const limpiar = async () => {
   idBusqueda.value = ''
   cargar()
 }
+
+const formatearFecha=(fecha:string)=>{
+    return fecha.split('T')[0]?.split('-').reverse().join('/')
+}
 onMounted(cargar)
 </script>
 
@@ -100,7 +104,7 @@ onMounted(cargar)
           <td>{{ c.tipo_costo }}</td>
           <td>{{ c.descripcion }}</td>
           <td>{{ c.monto }}</td>
-          <td>{{ c.fecha }}</td>
+          <td>{{ formatearFecha(c.fecha) }}</td>
           <td>
             <span class="badge" :class="c.estado === 'ACTIVO' ? 'bg-success' : 'bg-danger'">
               {{ c.estado }}
