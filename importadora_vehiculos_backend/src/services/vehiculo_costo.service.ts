@@ -28,9 +28,7 @@ export class VehiculoCostoService {
     async buscarPorVin(vin:string):Promise<VehiculoCosto[]>{
         if(!vin) throw new Error('VIN requerido')
         const costos = await this.repository.buscarPorVin(vin)
-        if(costos.length===0){
-            throw new Error('No se encontraron costos para el vin proporcionado')
-        }
+       
         return costos
     }
     async editar(id:number,data:Partial<VehiculoCosto>){

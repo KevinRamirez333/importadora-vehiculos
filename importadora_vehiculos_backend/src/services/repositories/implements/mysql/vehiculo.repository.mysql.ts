@@ -83,6 +83,10 @@ export class VehiculoRepositoryMySQL implements VehiculoRepository{
         ]
         await connector.query(query,values)
     }
+    async actualizarPrecio(vin: string, precio: number, porcentaje:number): Promise<void> {
+      const query=`update vehiculo set precio_venta=?,porcent_ganancia=?,id_estado=2 where vin=?`
+      await connector.query(query,[precio,porcentaje,vin])
+    }
     async deactivate(vin:string):Promise<void>{
         const query=`update vehiculo
         set activo=false

@@ -46,6 +46,12 @@ export class IngresoVehiculoRepositoryMySQL implements IngresoVehiculoRepository
 
    return rows.length ? rows[0]:null
   }
+
+  async findByVin (vin:string): Promise<IngresoVehiculo|null>{
+    const [rows]:any=await connector.query(`select * from ingreso_vehiculo where vin=?`,[vin])
+    return rows.length ? rows[0]:null
+  }
+ 
   async update(id: number, data: IngresoVehiculo): Promise<void> {
       const query = `
     UPDATE ingreso_vehiculo
@@ -61,6 +67,7 @@ export class IngresoVehiculoRepositoryMySQL implements IngresoVehiculoRepository
     id
   ])
   }
+
   async actualizarValorIngreso(id: number, valor: number): Promise<void> {
     const query = `update ingreso_vehiculo set valor_ingreso=? where id_ingreso=?`
 

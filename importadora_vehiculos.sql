@@ -49,6 +49,7 @@ placa varchar(20),
 anio int,
 color varchar(20),
 precio_venta decimal(12,2),
+porcent_ganancia int,
 activo boolean default true,
 id_marca int,
 id_estado int,
@@ -58,6 +59,7 @@ constraint fk_id_marca foreign key (id_marca) references marca(id_marca),
 constraint fk_id_estado foreign key (id_estado) references estado(id_estado),
 constraint fk_id_modelo foreign key(id_modelo) references modelo(id_modelo)
 );
+
 create table ingreso_vehiculo(
   id_ingreso int auto_increment,
   vin varchar(20),

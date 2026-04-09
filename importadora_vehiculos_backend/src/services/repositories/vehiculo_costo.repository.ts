@@ -7,4 +7,5 @@ export interface VehiculoCostoRepository {
     editar(id:number, data:Partial<VehiculoCosto>):Promise<void>
     anular(id:number):Promise<void>
     activar(id:number):Promise<void>
+    
 }

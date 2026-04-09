@@ -48,6 +48,16 @@ export class IngresoVehiculoService {
     }
     return result;
   }
+  async obtenerPorVin(vin:string){
+    if (!vin) throw new Error ('VIN es requerido')
+    const result = await this.ingresoRepo.findByVin(vin)
+
+    if(!result){
+      throw new Error('Ingreso no encontrado por VIN')
+    }
+
+    return result;
+  }
 async editarIngreso(id: number, data: any) {
 
   const ingreso = await this.ingresoRepo.findById(id)

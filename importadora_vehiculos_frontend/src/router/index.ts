@@ -22,6 +22,7 @@ import EditarImportacion from '@/views/importaciones/EditarImportacion.vue'
 import ListaVehiculoCostos from '@/views/costoVehiculos/ListaVehiculoCostos.vue'
 import CrearVehiculoCosto from '@/views/costoVehiculos/CrearVehiculoCosto.vue'
 import EditarVehiculoCosto from '@/views/costoVehiculos/EditarVehiculoCosto.vue'
+import DefinirPrecioVenta from '@/views/vehiculos/DefinirPrecioVenta.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -64,6 +65,10 @@ const router = createRouter({
         {
     path: '/vehiculos/crear',
     component: CreateVehiculo,
+  },
+          {
+    path: '/vehiculos/precio-venta/:vin',
+    component: DefinirPrecioVenta,
   },
   {
   path: '/marcas',

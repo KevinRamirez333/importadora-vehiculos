@@ -37,6 +37,21 @@ public async listar(req: Request, res: Response) {
   }
 }
     @GET()
+    @route('/costo-total/:vin')
+    public async costoTotal(req:Request,res:Response){
+        try{
+            const vin=req.params.vin
+            if (!vin || typeof vin !== 'string') {
+            return res.status(400).send('VIN inválido')
+            }
+            const data = await this.service.obtenerCostoTotal(vin)
+            res.send(data)
+        }catch(error:any){
+            res.status(500).send({message:error.message})
+        }
+    }
+
+    @GET()
     @route('/:vin')
     public async buscar(req:Request,res:Response){
         try{
@@ -64,6 +79,23 @@ public async listar(req: Request, res: Response) {
             res.send(result);
         }catch(error:any){
             res.status(500).send({message:error.message})
+        }
+    }
+    @PUT()
+    @route('/precio/:vin')
+    public async actualizarPrecio(req:Request, res:Response){
+        try{
+            const vin = req.params.vin
+            const precio = req.body.precio
+            const porcentaje = req.body.porcentaje
+            if (!vin || typeof vin !== 'string') {
+            return res.status(400).send('VIN inválido')
+            }
+            const result = await this.service.actualizarPrecio(vin,precio,porcentaje)
+            res.send(result)
+        } catch(error:any){
+            res.status(500).send({message: error.message})
+
         }
     }
     @POST()

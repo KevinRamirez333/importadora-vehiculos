@@ -3,11 +3,16 @@ import { VehiculoRepositoryMySQL } from "./repositories/implements/mysql/vehicul
 import { Vehiculo } from "./repositories/domain/vehiculo";
 import { MarcaRepositoryMySQL } from "./repositories/implements/mysql/marca.repository.mysql";
 import { EstadoRepositoryMySQL } from "./repositories/implements/mysql/estado.repository.mysql";
+import { IngresoVehiculoService } from "./ingreso_vehiculo.service";
+import { VehiculoCostoService } from "./vehiculo_costo.service";
+
 
 export class VehiculoService{
     private vehiculoRepo:VehiculoRepository=new VehiculoRepositoryMySQL()
     private marcaRepo=new MarcaRepositoryMySQL()
     private estadoRepo=new EstadoRepositoryMySQL()
+    private ingresoRepo= new IngresoVehiculoService()
+    private costoRepo = new VehiculoCostoService()
 
     async crearVehiculo(data:Vehiculo){
         if(!data.vin){
@@ -59,5 +64,25 @@ async listarVehiculos(filtros?: any) {
     async activar(vin:string){
         await this.vehiculoRepo.activate(vin)
         return{message:"Vehiculo activado"}
+    }
+    async obtenerCostoTotal(vin:string){
+        const ingreso = await this.ingresoRepo.obtenerPorVin(vin)
+        const costos = await this.costoRepo.buscarPorVin(vin)
+
+        const totalCostos = costos.reduce((sum,c)=> sum+Number(c.monto), 0)
+        return{
+            ingreso: ingreso.valor_ingreso,
+            costos:totalCostos,
+            total: Number(ingreso.valor_ingreso)+totalCostos
+
+        }
+    }
+    async actualizarPrecio(vin:string, precio:number, porcentaje:number){
+        if(!vin) throw new Error('VIN es requerido')
+        if(!precio) throw new Error('Valor de precio de venta es requerido')
+        await this.vehiculoRepo.actualizarPrecio(vin,precio,porcentaje)
+        return{
+            message:"Precio de venta y estado actualizado correctamente "
+        }
     }
 }

@@ -25,7 +25,7 @@ const cargarVehiculos = async () => {
   vehiculos.value = res.data
 }
 
-// 🔍 Buscar con filtros
+// Buscar con filtros
 const buscar = async () => {
   try {
     const params: any = {}
@@ -72,6 +72,9 @@ const cargarModelos = async () => {
 const editar = (vin: string) => {
   router.push(`/vehiculos/editar/${vin}`)
 }
+const precioVenta = (vin: string) => {
+  router.push(`/vehiculos/precio-venta/${vin}`)
+}
 
 const desactivar = async (vin: string) => {
   await api.post(`/vehiculos/desactivar/${vin}`)
@@ -81,6 +84,13 @@ const desactivar = async (vin: string) => {
 const activar = async (vin: string) => {
   await api.post(`/vehiculos/activar/${vin}`)
   cargarVehiculos()
+}
+
+const formatearPrecio =(valor:string)=>{
+    return Number(valor).toLocaleString('es-GT', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
 }
 
 onMounted(async () => {
@@ -93,7 +103,7 @@ onMounted(async () => {
   <nav class="navbar">
     <button @click="router.push('/dashboard')">← Volver</button>
   </nav>
-  <div class="page">
+  <div class=" mx-5">
     <br />
     <h2>Listado de Vehículos</h2>
     <button class="btn-crear" @click="router.push('/vehiculos/crear')">+ Crear Vehículo</button>
@@ -123,6 +133,7 @@ onMounted(async () => {
     </div>
 
     <!-- 📋 TABLA -->
+
     <table>
       <thead>
         <tr>
@@ -131,6 +142,8 @@ onMounted(async () => {
           <th>Modelo</th>
           <th>Año</th>
           <th>Color</th>
+          <th>Precio Venta</th>
+          <th>% Ganancia</th>
           <th>Estado</th>
           <th>Vigente</th>
           <th>Acciones</th>
@@ -144,6 +157,8 @@ onMounted(async () => {
           <td>{{ v.modelo }}</td>
           <td>{{ v.anio }}</td>
           <td>{{ v.color }}</td>
+          <td>{{ formatearPrecio(v.precio_venta) }}</td>
+          <td>{{ v.porcent_ganancia }}</td>
           <td>{{ v.estado }}</td>
           <td>
             <span :class="v.activo ? 'badge-activo' : 'badge-inactivo'">
@@ -159,6 +174,7 @@ onMounted(async () => {
             </button>
 
             <button v-else class="btn-activar" @click="activar(v.vin)">Activar</button>
+            <button class="btn btn-success" @click="precioVenta(v.vin)">Precio Venta</button>
           </td>
         </tr>
       </tbody>

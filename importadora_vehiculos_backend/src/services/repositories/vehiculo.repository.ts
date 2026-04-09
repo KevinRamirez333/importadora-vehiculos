@@ -7,4 +7,5 @@ export interface VehiculoRepository{
     update(vin:string,vehiculo:Vehiculo):Promise<void>
     deactivate(vin:string):Promise<void>
     activate(vin:string):Promise<void>
+    actualizarPrecio(vin:string,precio:number, porcentaje:number):Promise<void>
 }
