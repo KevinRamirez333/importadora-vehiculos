@@ -7,21 +7,41 @@ import api from '@/services/api'
 const router = useRouter()
 
 const marcas = ref<any[]>([])
+const marcasCopia = ref<any[]>([])
+const textoBusqueda = ref('')
 const editandoId = ref<number | null>(null)
 const nombreEditado = ref('')
-const id = ref('')
+//const id = ref('')
 
 // cargar
 const cargarMarcas = async () => {
   const res = await api.get('/marcas')
   marcas.value = res.data
+  marcasCopia.value = res.data
 }
+
+const filtrar =()=>{
+  const texto = textoBusqueda.value.toLowerCase().trim()
+
+  marcas.value = marcasCopia.value.filter((m:any)=>{
+
+    const estado=m.activo===1?'activo': 'inactivo'
+
+    return(
+      m.id_marca.toString().includes(texto)||
+      m.nombre.toLowerCase().includes(texto)||
+      estado===texto
+    )
+  })
+}
+
+/*
 //Buscar por id
 const buscarPorId = async () => {
   try {
     const res = await api.get(`/marcas/${id.value}`)
 
-    marcas.value = [res.data] 
+    marcas.value = [res.data]
   } catch (error: any) {
     if (error.response && error.response.status === 404) {
       alert('No existe una marca con ese ID')
@@ -31,9 +51,9 @@ const buscarPorId = async () => {
 
     marcas.value = [] // opcional: limpiar resultados
   }
-}
-const limpiar = () => {
-  id.value = ''
+}*/
+const limpiar = () => { 
+  textoBusqueda.value = ''
   cargarMarcas()
 }
 
@@ -73,18 +93,15 @@ onMounted(cargarMarcas)
 </script>
 
 <template>
-  <nav class="navbar navbar-dark bg-dark px-3 mb-4">
-    <button class="btn btn-outline-light" @click="router.push('/dashboard')">← Volver</button>
-  </nav>
   <div class="container mt-4">
     <div class="d-flex justify-content-between mb-3">
       <h2>Listado de Marcas</h2>
 
-      <button class="btn btn-primary" @click="router.push('/marcas/crear')">Nueva Marca</button>
+      <button class="btn btn-primary" @click="router.push({name: 'crear-marca'})">Nueva Marca</button>
     </div>
     <div class="mb-3 d-flex gap-2">
-      <input type="text" v-model="id" placeholder="Buscar por ID" />
-      <button class="btn btn-success" @click="buscarPorId">Buscar</button>
+      <input type="text" v-model="textoBusqueda" placeholder="Ingrese el valor de busqueda" />
+      <button class="btn btn-success" @click="filtrar">Buscar</button>
       <button class="btn btn-warning" @click="limpiar">Limpiar</button>
     </div>
 

@@ -74,14 +74,17 @@ create table ingreso_vehiculo(
 );
 alter table ingreso_vehiculo
 add column estado_ingreso ENUM('ACTIVO','ANULADO') DEFAULT 'ACTIVO';
+
+
 create table cliente(
   id_cliente int auto_increment,
-  nombre varchar(50),
-  nit varchar(20),
-  dpi varchar(20),
+  nombre varchar(100),
+  apellido varchar(100),
+  nit varchar(20) unique,
+  dpi varchar(20) unique,
   telefono varchar(20),
   direccion varchar(30),
-activo boolean default true,
+  estado boolean default true,
 constraint pk_id_cliente primary key (id_cliente)
 );
 
@@ -107,5 +110,7 @@ estado enum('ACTIVO','ANULADO'),
 constraint pk_id_costo primary key(id_costo),
 constraint fk_vin_costo foreign key (vin) references vehiculo(vin)
 );
+
+
 
 

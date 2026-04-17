@@ -37,9 +37,7 @@ const cargarEstados = async () => {
 const cargarModelos = async () => {
   if (!id_marca.value) return
 
-  const res = await api.get(
-    `/modelos/marca/${id_marca.value}`
-  )
+  const res = await api.get(`/modelos/marca/${id_marca.value}`)
 
   modelos.value = res.data
 }
@@ -53,16 +51,15 @@ watch(id_marca, () => {
 // Guardar vehículo
 const guardar = async () => {
   try {
-
     const payload = {
       vin: vin.value,
       placa: placa.value,
       anio: anio.value,
       color: color.value,
-      precio_venta: precio_venta.value=null,
+      precio_venta: (precio_venta.value = null),
       id_marca: id_marca.value,
       id_estado: id_estado.value,
-      id_modelo: id_modelo.value
+      id_modelo: id_modelo.value,
     }
 
     await api.post('/vehiculos', payload)
@@ -78,7 +75,6 @@ const guardar = async () => {
     id_marca.value = null
     id_modelo.value = null
     id_estado.value = null
-
   } catch (error: any) {
     alert(error.response?.data?.message || 'Error al crear vehículo')
   }
@@ -92,17 +88,9 @@ onMounted(async () => {
 
 <template>
   <div class="page">
-
-    <!-- NAVBAR -->
-    <nav class="navbar">
-      <button @click="router.push('/Vehiculos')">
-        ← Volver
-      </button>
-    </nav>
-
     <!-- FORMULARIO -->
     <div class="form-container">
-      <br>
+      <br />
       <h2 class="titulo">Crear Vehículo</h2>
 
       <!-- VIN -->
@@ -128,8 +116,6 @@ onMounted(async () => {
         <label>Color</label>
         <input v-model="color" placeholder="Ej: Rojo" />
       </div>
-
-      
 
       <!-- Marca -->
       <div class="campo">
@@ -165,34 +151,16 @@ onMounted(async () => {
       </div>
 
       <!-- BOTÓN -->
-      <button class="btn-guardar" @click="guardar">
-        Guardar Vehículo
-      </button>
+      <button class="btn btn-success" @click="guardar">Guardar Vehículo</button>
+      <button class="btn btn-secondary" @click="router.push({ name: 'vehiculos' })">Volver</button>
     </div>
-
   </div>
 </template>
 
 <style scoped>
-
 .page {
   display: flex;
   flex-direction: column;
-}
-
-/* NAVBAR */
-.navbar {
-  padding: 15px 30px;
-  background-color: #2c3e50;
-}
-
-.navbar button {
-  background: #42b983;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
 /* CONTENEDOR */
@@ -230,21 +198,4 @@ select {
   border: 1px solid #ccc;
   font-size: 14px;
 }
-
-/* BOTÓN */
-.btn-guardar {
-  margin-top: 10px;
-  padding: 14px;
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.btn-guardar:hover {
-  background-color: #36996f;
-}
-
 </style>

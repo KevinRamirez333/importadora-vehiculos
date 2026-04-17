@@ -88,7 +88,7 @@ onMounted(cargar)
         <input type="date" class="form-control" v-model="fecha" />
       </div>
       <button class="btn btn-success" @click="crear()">Guardar</button>
-      <button class="btn btn-secondary mt-2" @click="router.push('/vehiculo-costos')">
+      <button class="btn btn-secondary mt-2" @click="router.push({name: 'vehiculo-costos'})">
         Volver
       </button>
     </div>

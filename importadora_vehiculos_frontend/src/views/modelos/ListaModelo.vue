@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
 
@@ -8,18 +8,38 @@ const router = useRouter()
 
 const modelos = ref<any[]>([])
 const marcas = ref<any[]>([])
+const modelosCopia = ref<[]>([])
+
 
 const editandoId = ref<number | null>(null)
 const nombreEditado = ref('')
 const marcaEditada = ref<number | null>(null)
+
+
+const textoBusqueda = ref('')
 const id = ref('')
 
+
+const filtrar =()=>{
+  const texto = textoBusqueda.value.toLowerCase().trim()
+  
+  modelos.value = modelosCopia.value.filter((m:any)=>{
+    const estado= m.activo===1?'activo':'inactivo'
+
+    return(
+      m.id_modelo.toString().includes(texto)||
+      m.nombre.toLowerCase().includes(texto)||
+      m.marca.toLowerCase().includes(texto)||
+      estado===texto
+    )
+  })
+}
 //buscar por id
 const buscarPorId = async () => {
   try {
 
     const res = await api.get(`/modelos/${id.value}`)
-    console.log(res)
+
     modelos.value = [res.data]
   } catch (error: any) {
     if (error.response) {
@@ -29,13 +49,14 @@ const buscarPorId = async () => {
 }
 //Limpiar
 const limpiar = () => {
-  id.value = ''
+  textoBusqueda.value = ''
   cargarModelos()
 }
 // cargar datos
 const cargarModelos = async () => {
   const res = await api.get('/modelos')
   modelos.value = res.data
+  modelosCopia.value=res.data
 }
 
 const cargarMarcas = async () => {
@@ -75,12 +96,14 @@ const cancelar = () => {
 // activar/desactivar
 const desactivar = async (id: number) => {
   await api.post(`/modelos/desactivar/${id}`)
-  cargarModelos()
+
+  await cargarModelos()
+
 }
 
 const activar = async (id: number) => {
   await api.post(`/modelos/activar/${id}`)
-  cargarModelos()
+  await cargarModelos()
 }
 
 onMounted(async () => {
@@ -90,20 +113,16 @@ onMounted(async () => {
 </script>
 
 <template>
-  <nav>
-    <nav class="navbar navbar-dark bg-dark px-3 mb-4">
-      <button class="btn btn-outline-light" @click="router.push('/dashboard')">← Volver</button>
-    </nav>
-  </nav>
+ 
   <div class="container mt-4">
     <div class="d-flex justify-content-between mb-3">
       <h2>Modelos</h2>
 
-      <button class="btn btn-primary" @click="router.push('/modelos/crear')">Nuevo Modelo</button>
+      <button class="btn btn-primary" @click="router.push({name: 'crear-modelo'})">Nuevo Modelo</button>
     </div>
     <div class="mb-3 d-flex gap-2">
-      <input type="text" v-model="id" placeholder="Buscar por ID" />
-      <button class="btn btn-success" @click="buscarPorId">Buscar</button>
+      <input type="text" v-model="textoBusqueda" placeholder="Ingrese el valor de busqueda" />
+      <button class="btn btn-success" @click="filtrar">Buscar</button>
       <button class="btn btn-warning" @click="limpiar">Limpiar</button>
     </div>
 

@@ -24,14 +24,14 @@ const cargar = async () => {
   }
 }
 const calcular = () => {
-  precioVenta.value = Number(total.value) + (Number(total.value) * (porcentaje.value / 100))
+  precioVenta.value = Number(total.value) + Number(total.value) * (porcentaje.value / 100)
 }
 
 const guardar = async () => {
   try {
     await api.put(`/vehiculos/precio/${vin}`, {
       precio: precioVenta.value,
-      porcentaje: porcentaje.value
+      porcentaje: porcentaje.value,
     })
     alert('Precio de venta agregado correctamente')
     router.push('/vehiculos')
@@ -74,7 +74,7 @@ onMounted(cargar)
         <input :value="precioVenta" class="form-control" disabled />
       </div>
       <button class="btn btn-success" @click="guardar()">Guardar</button>
-      <button class="btn btn-secondary mt-2" @click="router.push('/vehiculos')">Volver</button>
+      <button class="btn btn-secondary mt-2" @click="router.push({name: 'vehiculos'})">Volver</button>
     </div>
   </div>
 </template>

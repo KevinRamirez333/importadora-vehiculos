@@ -21,7 +21,7 @@ const login = async () => {
 
     localStorage.setItem('token', response.data.token)
 
-    router.push('/dashboard')
+    router.push('/dashboard/inicio')
 
   } catch (error) {
     alert('Credenciales incorrectas')

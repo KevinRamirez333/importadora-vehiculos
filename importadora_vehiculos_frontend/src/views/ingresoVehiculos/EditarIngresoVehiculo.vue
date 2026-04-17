@@ -100,7 +100,7 @@ onMounted(async () => {
       </div>
 
       <button class="btn btn-success" @click="actualizar">Guardar</button>
-      <button class="btn btn-secondary mt-2" @click="router.push('/ingresosVehiculos')">
+      <button class="btn btn-secondary mt-2" @click="router.push({name: 'ingresos-vehiculos'})">
         Volver
       </button>
     </div>

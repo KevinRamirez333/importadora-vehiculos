@@ -1,38 +1,54 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
 
 const router = useRouter()
 const ingresos = ref<any[]>([])
+const ingresosCopia = ref<any[]>([])
+const textoBusqueda = ref('')
 
 const id = ref('')
 //Busqueda de ingreso de vehiculo por id
 const BuscarPorId = async () => {
-  try{
-  const res = await api.get(`/ingresos/${id.value}`)
-  ingresos.value = [res.data]  
-  }catch(error:any){
+  try {
+    const res = await api.get(`/ingresos/${id.value}`)
+    ingresos.value = [res.data]
+  } catch (error: any) {
     if (error.response) {
       alert('No existe una ingreso con ese ID')
     } else {
       alert('Ocurrió un error al buscar')
     }
   }
-
 }
-
 
 //Cargar ingresos de vehiculos
 const cargar = async () => {
   const res = await api.get('/ingresos')
   ingresos.value = res.data
+  ingresosCopia.value = res.data
 }
+const filtrar = async () => {
+  const texto = textoBusqueda.value.toLowerCase().trim()
+  ingresos.value = ingresosCopia.value.filter((i: any) => {
+    const cliente = i.id_cliente?.toLowerCase() || ''
 
+    return (
+      i.id_ingreso.toString().includes(texto) ||
+      i.vin.toLowerCase().includes(texto) ||
+      i.tipo_ingreso.toLowerCase().includes(texto) ||
+      formatearFecha(i.fecha).toString().includes(texto) ||
+      cliente.includes(texto) ||
+      i.valor_ingreso.toString().includes(texto) ||
+      i.estado_ingreso.toLowerCase().includes(texto)
+    )
+  })
+}
 //Acceder a vista editar ingresos
 const editar = (id: number) => {
-  router.push(`/ingresosVehiculos/editar/${id}`)
+  router.push({ name: 'editar-ingreso-vehiculo', params: { id } })
 }
 
 const anular = async (id: number) => {
@@ -61,7 +77,7 @@ function formatearFecha(fecha: any) {
 }
 
 const limpiar = async () => {
-  id.value = ''
+  textoBusqueda.value = ''
   cargar()
 }
 
@@ -69,23 +85,23 @@ onMounted(cargar)
 </script>
 
 <template>
-  <nav class="navbar navbar-dark bg-dark px-3 mb-4">
-    <button class="btn btn-outline-light" @click="router.push('/dashboard')">← Volver</button>
-  </nav>
   <div class="container mt-4">
     <div class="d-flex justify-content-between mb-3">
       <h2>Ingreso de Vehículos</h2>
 
-      <button class="btn btn-primary" @click="router.push('/ingresosVehiculos/crear')">
+      <button class="btn btn-primary" @click="router.push({ name: 'crear-ingreso-vehiculo' })">
         Nuevo ingreso
       </button>
     </div>
     <div class="mb-3 d-flex gap-2">
-      
-        <input type="text" v-model="id" class="form-control" placeholder="Buscar por ID" />
-        <button class="btn btn-success" @click="BuscarPorId">Buscar</button>
-        <button class="btn btn-warning" @click="limpiar">Limpiar</button>
-      
+      <input
+        type="text"
+        v-model="textoBusqueda"
+        class="form-control"
+        placeholder="Ingrese el valor de busqueda"
+      />
+      <button class="btn btn-success" @click="filtrar">Buscar</button>
+      <button class="btn btn-warning" @click="limpiar">Limpiar</button>
     </div>
     <table class="table table-bordered text-center">
       <thead class="table-dark">

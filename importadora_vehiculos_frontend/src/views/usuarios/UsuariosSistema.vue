@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
 
@@ -9,28 +8,37 @@ const usuarios = ref<any[]>([])
 const mostrarModalPassword = ref(false)
 const usuarioSeleccionado = ref<number | null>(null)
 const nuevaPassword = ref('')
-const id=ref("")
 
-const buscarPorId=async ()=>{
-  try{
-const res=await api.get(`/usuarios/${id.value}`)
-  usuarios.value=[res.data]
-  } catch(error:any){
-    alert("No existe ningun usuario con ese ID")
-  }
+const textoBusqueda = ref('')
+const usuariosOriginal = ref<any[]>([])
 
-}
-const limpiar =()=>{
-  id.value=""
+const limpiar = () => {
+  textoBusqueda.value = ''
   cargarUsuarios()
 }
 const cargarUsuarios = async () => {
   try {
     const res = await api.get('/usuarios')
     usuarios.value = res.data
+    usuariosOriginal.value = res.data
   } catch (error) {
     alert('Error cargando usuarios')
   }
+}
+
+const filtrar = () => {
+  const texto = textoBusqueda.value.toLowerCase()
+
+  usuarios.value = usuariosOriginal.value.filter((c) => {
+    const estadoTexto = c.activo === 1 ? 'activo' : 'inactivo'
+    return (
+      c.id_usuario.toString().includes(texto) ||
+      c.nombre.toLowerCase().includes(texto) ||
+      c.email.toLowerCase().includes(texto) ||
+      c.rol.toLowerCase().includes(texto) ||
+      estadoTexto===texto
+    )
+  })
 }
 
 const desactivarUsuario = async (id: number) => {
@@ -55,7 +63,7 @@ const activarUsuario = async (id: number) => {
 }
 
 const editarUsuario = (id: number) => {
-  router.push(`/usuarios/editar/${id}`)
+  router.push({ name: 'editar-usuario', params: { id } })
 }
 
 const abrirResetPassword = (id: number) => {
@@ -64,45 +72,35 @@ const abrirResetPassword = (id: number) => {
   mostrarModalPassword.value = true
 }
 const confirmarResetPassword = async () => {
-
   if (!nuevaPassword.value) {
-    alert("Ingrese una contraseña")
+    alert('Ingrese una contraseña')
     return
   }
 
   try {
+    await api.patch(`/usuarios/reset/password/${usuarioSeleccionado.value}`, {
+      newPassword: nuevaPassword.value,
+    })
 
-    await api.patch(
-      `/usuarios/reset/password/${usuarioSeleccionado.value}`,
-      {
-        newPassword: nuevaPassword.value
-      }
-    )
-
-    alert("Contraseña reseteada correctamente")
+    alert('Contraseña reseteada correctamente')
 
     mostrarModalPassword.value = false
-
   } catch {
-    alert("Error reseteando contraseña")
+    alert('Error reseteando contraseña')
   }
-
 }
 onMounted(cargarUsuarios)
 </script>
 
 <template>
-  <nav class="navbar">
-    <button class="btn-volver" @click="router.push('/dashboard')">← Volver al dashboard</button>
-  </nav>
   <div class="page">
     <br />
 
     <h2 class="titulo">Usuarios del Sistema</h2>
-    <button class="btn-crear" @click="router.push('/usuarios/crear')">Crear Usuario</button>
+    <button class="btn-crear" @click="router.push({ name: 'crear-usuario' })">Crear Usuario</button>
     <div class="mb-3 d-flex gap-2">
-      <input type="text" v-model="id" placeholder="Buscar por ID" />
-      <button class="btn btn-success" @click="buscarPorId">Buscar</button>
+      <input type="text" v-model="textoBusqueda" placeholder="Ingrese valor de busqueda" />
+      <button class="btn btn-success" @click="filtrar()">Buscar</button>
       <button class="btn btn-warning" @click="limpiar">Limpiar</button>
     </div>
     <table class="tabla">

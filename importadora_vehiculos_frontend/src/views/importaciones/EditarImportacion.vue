@@ -63,7 +63,7 @@ onMounted(cargar)
 
       </div>
       <button class="btn btn-success" @click="editar()">Guardar</button>
-      <button class="btn btn-secondary mt-2" @click="router.push('/importaciones')">Volver</button>
+      <button class="btn btn-secondary mt-2" @click="router.push({name: 'importaciones'})">Volver</button>
     </div>
   </div>
 </template>

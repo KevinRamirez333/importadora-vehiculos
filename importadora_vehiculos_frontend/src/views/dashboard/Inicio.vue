@@ -1,24 +1,11 @@
 <script setup lang="ts">
 import api from '@/services/api'
-import { jwtDecode } from 'jwt-decode'
+
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
-const router = useRouter()
+
 const totalVehiculos = ref(0)
-
-const token = localStorage.getItem('token')
-let rol = ''
-
-if (token) {
-  const decoded: any = jwtDecode(token)
-  rol = decoded.rol
-}
-
-const logout = () => {
-  localStorage.removeItem('token') // elimina el token
-  router.push('/') // redirige al login
-}
 
 onMounted(async () => {
   try {
@@ -30,52 +17,10 @@ onMounted(async () => {
     console.error('Error cargando vehículos:', error)
   }
 })
-
-const menuOptions = computed(() => {
-  const baseOptions = [
-    { name: 'Vehículos', route: '/vehiculos' },
-    { name: 'Clientes', route: '/clientes' },
-    { name: 'Ventas', route: '/ventas' },
-    { name: 'Cambiar contraseña', route: 'usuarios/cambiar/password' },
-  ]
-
-  if (rol === 'ADMIN') {
-    return [
-      { name: 'Usuarios', route: '/usuarios' },
-      { name: 'Importaciones', route: '/importaciones' },
-      { name: 'Marcas', route: '/marcas' },
-      { name: 'Modelos', route: '/modelos' },
-      { name: 'Ingresos de vehiculos', route: '/ingresosVehiculos' },
-      {name:'Costo Vehiculos', route:'/vehiculo-costos'},
-      ...baseOptions,
-    ]
-  }
-
-  if (rol === 'SUPERVISOR') {
-    return [{ name: 'Importaciones', route: '/importaciones' }, ...baseOptions]
-  }
-
-  return baseOptions
-})
 </script>
 
 <template>
   <div>
-    <nav class="navbar">
-      <span class="logo">Sistema Vehículos</span>
-
-      <ul>
-        <li v-for="item in menuOptions" :key="item.route">
-          <router-link :to="item.route">
-            {{ item.name }}
-          </router-link>
-        </li>
-        <!-- Botón cerrar sesión -->
-        <li>
-          <a href="#" @click.prevent="logout"> Cerrar sesión </a>
-        </li>
-      </ul>
-    </nav>
 
     <!-- CONTENIDO DEL DASHBOARD -->
     <div class="dashboard">

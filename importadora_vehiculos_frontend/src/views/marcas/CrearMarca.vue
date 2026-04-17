@@ -22,9 +22,6 @@ const crearMarca = async () => {
 </script>
 
 <template>
-  <nav class="navbar navbar-dark bg-dark px-3 mb-3">
-    <button class="btn btn-outline-light" @click="router.push('/marcas')">← Volver</button>
-  </nav>
   <div class="container mt-4">
     <h2 class="mb-4">Crear Marca</h2>
 
@@ -36,7 +33,7 @@ const crearMarca = async () => {
 
       <button class="btn btn-success" @click="crearMarca">Guardar</button>
 
-      <button class="btn btn-secondary mt-2" @click="router.push('/marcas')">Volver</button>
+      <button class="btn btn-secondary mt-2" @click="router.push({name: 'marcas'})">Volver</button>
     </div>
   </div>
 </template>

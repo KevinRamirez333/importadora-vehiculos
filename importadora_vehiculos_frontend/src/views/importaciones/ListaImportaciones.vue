@@ -5,15 +5,32 @@ import { onMounted, ref } from 'vue'
 
 const router = useRouter()
 const importaciones = ref<any[]>([])
+const importacionesCopia = ref<any[]>([])
+const id = ref('')
+const textoBusqueda = ref('')
 
-const id=ref('')
 const cargar = async () => {
   const res = await api.get('/importaciones')
   importaciones.value = res.data
+  importacionesCopia.value = res.data
 }
 
+const filtrar = ()=>{
+  const texto = textoBusqueda.value.toLowerCase().trim()
+
+  importaciones.value = importacionesCopia.value.filter((i:any)=>{
+    return(
+      i.id_importacion.toString().includes(texto)||
+      i.vin.toLowerCase().includes(texto)||
+      i.pais_origen.toLowerCase().includes(texto)||
+      i.costo_dolares.toString().includes(texto)||
+      i.tipo_cambio.toString().includes(texto)||
+      i.estado.toLowerCase().includes(texto)
+    )
+  })
+}
 const editar = async (id: number) => {
-  router.push(`importaciones/editar/${id}`)
+  router.push({name: 'editar-importacion', params: {id}})
 }
 
 const anular = async (id: number) => {
@@ -27,12 +44,12 @@ const activar = async (id: number) => {
   cargar()
 }
 
-const buscarPorId = async()=>{
-  try{
+const buscarPorId = async () => {
+  try {
     const res = await api.get(`/importaciones/${id.value}`)
     importaciones.value = [res.data]
-  } catch(error:any){
-    if(error.response && error.response.status === 404){
+  } catch (error: any) {
+    if (error.response && error.response.status === 404) {
       alert('No existe una importacion con ese ID')
     } else {
       alert('Ocurrió un error al buscar')
@@ -40,27 +57,24 @@ const buscarPorId = async()=>{
     importaciones.value = []
   }
 }
-const Limpiar = ()=>{
-  id.value = ''
+const Limpiar = () => {
+  textoBusqueda.value = ''
   cargar()
 }
 onMounted(cargar)
 </script>
 
 <template>
-  <nav class="navbar navbar-dark bg-dark px-3 mb-4">
-    <button class="btn btn-outline-light" @click="router.push('/dashboard')">← Volver</button>
-  </nav>
   <div class="container mt-4">
     <div class="d-flex justify-content-between mb-3">
       <h2>Lista de Importaciones</h2>
-      <button class="btn btn-primary" @click="router.push('/ingresosVehiculos/crear')">
+      <button class="btn btn-primary" @click="router.push({name:'crear-ingreso-vehiculo'})">
         Crear
       </button>
     </div>
     <div class="mb-3 d-flex gap-2">
-      <input type="text" class="form-control" v-model="id" placeholder="Buscar por ID" />
-      <button class="btn btn-success" @click="buscarPorId()">Buscar</button>
+      <input type="text" class="form-control" v-model="textoBusqueda" placeholder="Ingrese valor de busqueda" />
+      <button class="btn btn-success" @click="filtrar()">Buscar</button>
       <button class="btn btn-warning" @click="Limpiar()">Limpiar</button>
     </div>
 

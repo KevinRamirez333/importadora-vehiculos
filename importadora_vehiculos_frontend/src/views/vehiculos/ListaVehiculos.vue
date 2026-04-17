@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+
 import { useRouter } from 'vue-router'
 import api from '../../services/api'
 
@@ -8,8 +8,10 @@ const router = useRouter()
 
 // LISTA
 const vehiculos = ref<any[]>([])
+const vehiculosCopia = ref<any[]>([])
 
 // FILTROS
+const textoBusqueda = ref('')
 const vin = ref('')
 const marca = ref<number | null>(null)
 const modelo = ref<number | null>(null)
@@ -23,8 +25,27 @@ const modelos = ref<any[]>([])
 const cargarVehiculos = async () => {
   const res = await api.get('/vehiculos')
   vehiculos.value = res.data
+  vehiculosCopia.value = res.data
 }
 
+const filtrar = async () => {
+  const texto = textoBusqueda.value.toLowerCase().trim()
+  console.log(vehiculosCopia.value)
+  vehiculos.value = vehiculosCopia.value.filter((v: any) => {
+    const precio_venta = v.precio_venta?.toString() || ''
+    const activo = v.activo ? 'activo' : 'inactivo'
+    return (
+      v.vin.toLowerCase().includes(texto) ||
+      v.marca.toLowerCase().includes(texto) ||
+      v.modelo.toLowerCase().includes(texto) ||
+      v.anio.toString().includes(texto) ||
+      v.color.toLowerCase().includes(texto) ||
+      precio_venta.includes(texto) ||
+      v.estado.toLowerCase().includes(texto) ||
+      activo.includes(texto)
+    )
+  })
+}
 // Buscar con filtros
 const buscar = async () => {
   try {
@@ -45,11 +66,7 @@ const buscar = async () => {
 
 // Limpiar filtros
 const limpiar = async () => {
-  vin.value = ''
-  marca.value = null
-  modelo.value = null
-  anio.value = null
-
+textoBusqueda.value = ''
   await cargarVehiculos()
 }
 
@@ -70,10 +87,10 @@ const cargarModelos = async () => {
 
 // Acciones
 const editar = (vin: string) => {
-  router.push(`/vehiculos/editar/${vin}`)
+  router.push({ name: 'editar-vehiculo', params: { vin } })
 }
 const precioVenta = (vin: string) => {
-  router.push(`/vehiculos/precio-venta/${vin}`)
+  router.push({ name: 'precio-venta', params: { vin } })
 }
 
 const desactivar = async (vin: string) => {
@@ -86,8 +103,8 @@ const activar = async (vin: string) => {
   cargarVehiculos()
 }
 
-const formatearPrecio =(valor:string)=>{
-    return Number(valor).toLocaleString('es-GT', {
+const formatearPrecio = (valor: string) => {
+  return Number(valor).toLocaleString('es-GT', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
@@ -100,35 +117,19 @@ onMounted(async () => {
 </script>
 
 <template>
-  <nav class="navbar">
-    <button @click="router.push('/dashboard')">← Volver</button>
-  </nav>
-  <div class=" mx-5">
+  <div class="mx-5">
     <br />
     <h2>Listado de Vehículos</h2>
-    <button class="btn-crear" @click="router.push('/vehiculos/crear')">+ Crear Vehículo</button>
+    <button class="btn-crear" @click="router.push({ name: 'crear-vehiculo' })">
+      + Crear Vehículo
+    </button>
 
-    <!-- 🔍 FILTROS -->
+    <!-- 🔍 FILTROS 
+     -->
     <div class="filtros">
-      <input v-model="vin" placeholder="Buscar por VIN" />
+      <input v-model="textoBusqueda" placeholder="Ingrese valor de busqueda" />
 
-      <select v-model="marca" @change="cargarModelos">
-        <option value="">Marca</option>
-        <option v-for="m in marcas" :key="m.id_marca" :value="m.id_marca">
-          {{ m.nombre }}
-        </option>
-      </select>
-
-      <select v-model="modelo">
-        <option value="">Modelo</option>
-        <option v-for="mo in modelos" :key="mo.id_modelo" :value="mo.id_modelo">
-          {{ mo.nombre }}
-        </option>
-      </select>
-
-      <input type="number" v-model="anio" placeholder="Año" />
-
-      <button @click="buscar">Buscar</button>
+      <button @click="filtrar">Buscar</button>
       <button @click="limpiar">Limpiar</button>
     </div>
 

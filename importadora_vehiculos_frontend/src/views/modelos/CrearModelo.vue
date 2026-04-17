@@ -57,7 +57,7 @@ onMounted(cargarMarcas)
                 </select>
             </div>
             <button class="btn btn-success" @click="crearModelo">Guardar</button>
-            <button class="btn btn-secondary mt-2" @click="router.push('/modelos')">Volver</button>
+            <button class="btn btn-secondary mt-2" @click="router.push({name: 'modelos'})">Volver</button>
         </div>
     </div>
 

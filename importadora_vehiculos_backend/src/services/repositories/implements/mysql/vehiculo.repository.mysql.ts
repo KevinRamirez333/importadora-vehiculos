@@ -26,7 +26,7 @@ export class VehiculoRepositoryMySQL implements VehiculoRepository{
 
         return rows.length ? rows[0]:null
     }
-    async findAll(filtros?: any): Promise<any[]> {
+    async findAll(): Promise<any[]> {
 
   let query = `
     SELECT v.*, m.nombre as marca, mo.nombre as modelo, e.nombre as estado
@@ -34,8 +34,10 @@ export class VehiculoRepositoryMySQL implements VehiculoRepository{
     INNER JOIN marca m ON v.id_marca = m.id_marca
     INNER JOIN modelo mo ON v.id_modelo = mo.id_modelo
     INNER JOIN estado e ON v.id_estado = e.id_estado
-    WHERE 1=1
+    
+
   `
+     /* WHERE 1=1
 
   const params: any[] = []
 
@@ -59,9 +61,9 @@ export class VehiculoRepositoryMySQL implements VehiculoRepository{
   if (filtros?.vin) {
     query += " AND v.vin = ?"
     params.push(filtros.vin)
-  }
+  }*/
 
-  const [rows]: any = await connector.query(query, params)
+  const [rows]: any = await connector.query(query)
 
   return rows
 

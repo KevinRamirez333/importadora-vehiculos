@@ -101,9 +101,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <nav class="navbar">
-    <button @click="router.push('/vehiculos')">← Volver</button>
-  </nav>
   <div class="page">
     <div class="form-container">
       <h2>Editar Vehículo</h2>
@@ -162,7 +159,8 @@ onMounted(async () => {
         </select>
       </div>
 
-      <button @click="actualizar">Guardar Cambios</button>
+      <button class="btn btn-success" @click="actualizar">Guardar Cambios</button>
+      <button class="btn btn-secondary" @click="router.push({name: 'vehiculos'})">Volver</button>
     </div>
   </div>
 </template>
@@ -190,11 +188,5 @@ select {
   padding: 10px;
 }
 
-button {
-  padding: 12px;
-  background: #3498db;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
+
 </style>

@@ -52,7 +52,7 @@ const crear = async () => {
       const idIngreso = res.data.id
       
     if (tipo_ingreso.value === 'IMPORTACION') {
-      router.push(`/importaciones/crear/${idIngreso}`)
+      router.push({name: 'crear-importacion', params: {id: idIngreso}})
     ;((vin.value = ''),
       (tipo_ingreso.value = ''),
       (fecha.value = ''),
@@ -137,7 +137,7 @@ onMounted(async () => {
       </div>
 
       <button class="btn btn-success" @click="crear">Guardar</button>
-      <button class="btn btn-secondary mt-2" @click="router.push('/ingresosVehiculos')">
+      <button class="btn btn-secondary mt-2" @click="router.push({name: 'ingresos-vehiculos'})">
         Volver
       </button>
     </div>

@@ -36,9 +36,6 @@ onMounted(cargarUsuario)
 </script>
 
 <template>
-  <nav class="navbar">
-    <button class="btn-volver" @click="router.push('/usuarios')">← Volver</button>
-  </nav>
   <div class="form-container">
     <!-- Navbar superior -->
 
@@ -53,6 +50,7 @@ onMounted(cargarUsuario)
     </select>
 
     <button class="btn-guardar" @click="actualizarUsuario">Guardar Cambios</button>
+    <button class="btn btn-secondary" @click="router.push({name:'usuarios'})">Volver</button>
   </div>
 </template>
 

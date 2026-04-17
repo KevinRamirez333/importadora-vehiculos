@@ -17,7 +17,7 @@ const crearUsuario = async () => {
       nombre: nombre.value,
       email: email.value,
       password: password.value,
-      rol: rol.value
+      rol: rol.value,
     })
 
     alert('Usuario creado correctamente')
@@ -26,7 +26,6 @@ const crearUsuario = async () => {
     email.value = ''
     password.value = ''
     rol.value = 'VENDEDOR'
-
   } catch (error: any) {
     alert(error.response?.data?.message || 'Error al crear usuario')
   }
@@ -35,18 +34,10 @@ const crearUsuario = async () => {
 
 <template>
   <div class="page">
-
-    <!-- Navbar superior -->
-    <nav class="navbar">
-      <button class="btn-volver" @click="router.push('/usuarios')">
-        ← Volver
-      </button>
-    </nav>
-
     <!-- Contenido -->
-     
+
     <div class="form-container">
-      <br>
+      <br />
       <h2>Crear Usuario</h2>
 
       <input v-model="nombre" placeholder="Nombre" />
@@ -59,16 +50,13 @@ const crearUsuario = async () => {
         <option value="3">VENDEDOR</option>
       </select>
 
-      <button @click="crearUsuario">
-        Crear Usuario
-      </button>
+      <button @click="crearUsuario">Crear Usuario</button>
+      <button class="btn-volver" @click="router.push({name:'usuarios'})">Volver</button>
     </div>
-
   </div>
 </template>
 
 <style scoped>
-
 /* Estructura general */
 .page {
   display: flex;
@@ -86,7 +74,7 @@ const crearUsuario = async () => {
 
 /* Botón volver */
 .btn-volver {
-  background-color: #42b983;
+  background-color: gray;
   color: white;
   border: none;
   padding: 8px 15px;
@@ -96,9 +84,7 @@ const crearUsuario = async () => {
   transition: 0.3s ease;
 }
 
-.btn-volver:hover {
-  background-color: #369f6e;
-}
+
 
 /* Contenedor del formulario */
 .form-container {
@@ -143,5 +129,4 @@ button {
 button:hover {
   background-color: #369f6e;
 }
-
 </style>

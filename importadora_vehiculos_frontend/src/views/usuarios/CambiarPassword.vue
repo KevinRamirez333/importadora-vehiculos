@@ -54,9 +54,7 @@ const cambiarPassword = async () => {
 
 <template>
   <div class="page">
-    <nav class="navbar">
-      <button class="btn-volver" @click="router.push('/dashboard')">← Volver al dashboard</button>
-    </nav>
+
     <br>
     <div class="form-container">
       <h2>Cambiar contraseña</h2>
@@ -67,7 +65,8 @@ const cambiarPassword = async () => {
 
       <input type="password" v-model="confirmarPassword" placeholder="Confirmar nueva contraseña" />
 
-      <button @click="cambiarPassword">Cambiar contraseña</button>
+      <button class="btn btn-success" @click="cambiarPassword">Cambiar contraseña</button>
+      <button class="btn btn-secondary" @click="router.push({name:'inicio'})">Volver</button>
     </div>
   </div>
 </template>
@@ -84,14 +83,7 @@ const cambiarPassword = async () => {
   background: #2c3e50;
 }
 
-.btn-volver {
-  background: #42b983;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-}
+
 
 .form-container {
   display: flex;
@@ -108,17 +100,7 @@ input {
   font-size: 15px;
 }
 
-button {
-  padding: 14px;
-  border-radius: 8px;
-  border: none;
-  background: #42b983;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
 
-button:hover {
-  background: #369f6e;
-}
+
+
 </style>
