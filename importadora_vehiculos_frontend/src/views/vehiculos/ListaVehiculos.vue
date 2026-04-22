@@ -40,6 +40,7 @@ const filtrar = async () => {
       v.modelo.toLowerCase().includes(texto) ||
       v.anio.toString().includes(texto) ||
       v.color.toLowerCase().includes(texto) ||
+      v.placa.toLowerCase().includes(texto)||
       precio_venta.includes(texto) ||
       v.estado.toLowerCase().includes(texto) ||
       activo.includes(texto)
@@ -143,6 +144,7 @@ onMounted(async () => {
           <th>Modelo</th>
           <th>Año</th>
           <th>Color</th>
+          <th>Placa</th>
           <th>Precio Venta</th>
           <th>% Ganancia</th>
           <th>Estado</th>
@@ -158,6 +160,7 @@ onMounted(async () => {
           <td>{{ v.modelo }}</td>
           <td>{{ v.anio }}</td>
           <td>{{ v.color }}</td>
+          <td>{{ v.placa }}</td>
           <td>{{ formatearPrecio(v.precio_venta) }}</td>
           <td>{{ v.porcent_ganancia }}</td>
           <td>{{ v.estado }}</td>

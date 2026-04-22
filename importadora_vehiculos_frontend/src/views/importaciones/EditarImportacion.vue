@@ -26,7 +26,7 @@ const editar = async () => {
     tipo_cambio: tipo_cambio.value,
   })
   alert('Importacion actualizada correctamente')
-  router.push('/importaciones')
+  router.push({name:'importaciones'})
   } catch(error:any){
     alert(error.response?.data?.message || 'Error al actualizar'  )
   }

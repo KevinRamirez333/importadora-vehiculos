@@ -111,6 +111,19 @@ constraint pk_id_costo primary key(id_costo),
 constraint fk_vin_costo foreign key (vin) references vehiculo(vin)
 );
 
+create table venta(
+id_venta int auto_increment,
+fecha date not null,
+vin varchar(20) not null,
+id_cliente int not null,
+tipo_pago enum('CONTADO','CREDITO') not null,
+cuotas int null,
+precio_venta decimal(12,2) not null,
+estado enum('PENDIENTE','PAGADO','ANULADO') default 'PENDIENTE',
 
+constraint pk_id_venta primary key (id_venta),
+constraint fk_vin_venta foreign key(vin) references vehiculo(vin),
+constraint fk_cliente_venta foreign key(id_cliente) references cliente(id_cliente)
+);
 
 

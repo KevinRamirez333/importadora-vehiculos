@@ -26,9 +26,10 @@ export class IngresoVehiculoRepositoryMySQL implements IngresoVehiculoRepository
   async findAll(): Promise<any[]> {
 
     const query = `
-      SELECT i.*, v.placa, v.anio
+      SELECT i.*, v.placa, v.anio, c.nombre as cliente
       FROM ingreso_vehiculo i
       INNER JOIN vehiculo v ON i.vin = v.vin
+      LEFT JOIN cliente c ON i.id_cliente =c.id_cliente
     `
 
     const [rows]: any = await connector.query(query)

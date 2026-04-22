@@ -21,7 +21,8 @@ export class VehiculoRepositoryMySQL implements VehiculoRepository{
         await connector.query(query,values)
     }
     async findByVin(vin:string):Promise<Vehiculo|null>{
-        const query=`select * from vehiculo where vin=?`
+        const query=`select v.*, m.nombre as nombre from vehiculo v
+        inner join modelo m on v.id_modelo=m.id_modelo where vin=?`
         const[rows]:any=await connector.query(query,[vin])
 
         return rows.length ? rows[0]:null
@@ -70,7 +71,7 @@ export class VehiculoRepositoryMySQL implements VehiculoRepository{
     }
     async update(vin:string,vehiculo:Vehiculo):Promise<void>{
         const query=`update vehiculo
-        set id_modelo=?,placa=?,anio=?,color=?,precio_venta=?,id_marca=?,id_estado=?
+        set id_modelo=?,placa=?,anio=?,color=?,id_marca=?,id_estado=?
         where vin=?`
 
         const values=[
@@ -78,7 +79,7 @@ export class VehiculoRepositoryMySQL implements VehiculoRepository{
             vehiculo.placa,
             vehiculo.anio,
             vehiculo.color,
-            vehiculo.precio_venta,
+
             vehiculo.id_marca,
             vehiculo.id_estado,
             vin
@@ -103,4 +104,9 @@ export class VehiculoRepositoryMySQL implements VehiculoRepository{
 
         await connector.query(query,[vin])
     }
+    async estadoVendido(vin: string): Promise<void> {
+      const query ="update vehiculo set id_estado =3 where vin=?"
+      await connector.query(query,[vin])
+    }
+    
 }

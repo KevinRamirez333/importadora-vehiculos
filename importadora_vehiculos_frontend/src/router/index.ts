@@ -28,6 +28,7 @@ import CrearCliente from '@/views/clientes/CrearCliente.vue'
 import DashboardLayout from '@/views/dashboard/DashboardLayout.vue'
 import Inicio from '@/views/dashboard/Inicio.vue'
 import EditarCliente from '@/views/clientes/EditarCliente.vue'
+import CrearVenta from '@/views/ventas/CrearVenta.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -171,6 +172,11 @@ const router = createRouter({
           path: 'clientes/editar/:id',
           name: 'editar-cliente',
           component: EditarCliente
+        },
+        {
+          path: 'ventas/crear',
+          name:'crear-venta',
+          component: CrearVenta
         },
       ],
     },

@@ -21,7 +21,7 @@ const guardar = async () => {
       tipo_cambio: tasa_cambio.value,
     })
     alert('Importacion registrada correctamente')
-    router.push('/importaciones')
+    router.push({name:'importaciones'})
   } catch (error: any) {
     alert(error.response?.data?.message || 'Error')
   }
@@ -57,7 +57,7 @@ const totalQ = () => costo_dolares.value * tasa_cambio.value
         <input type="number" :value="totalQ()" class="form-control" disabled />
       </div>
       <button class="btn btn-success" @click="guardar">Guardar</button>
-      <button class="btn btn-secondary mt-2" @click="router.push('/importaciones')">Volver</button>
+      <button class="btn btn-secondary mt-2" @click="router.push({name:'importaciones'})">Volver</button>
     </div>
   </div>
 </template>

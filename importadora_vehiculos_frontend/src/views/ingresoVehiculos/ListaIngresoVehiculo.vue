@@ -29,6 +29,7 @@ const cargar = async () => {
   const res = await api.get('/ingresos')
   ingresos.value = res.data
   ingresosCopia.value = res.data
+  console.log(ingresos.value)
 }
 const filtrar = async () => {
   const texto = textoBusqueda.value.toLowerCase().trim()

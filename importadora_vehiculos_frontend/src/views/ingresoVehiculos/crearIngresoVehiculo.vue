@@ -9,11 +9,13 @@ const router = useRouter()
 const vin = ref('')
 const tipo_ingreso = ref('')
 const fecha = ref('')
-const id_cliente = ref<number | null>(null)
+const buscarCliente = ref('')
+const id_cliente = ref<number|null>(null)
+const nombreCliente = ref('')
 const valor_ingreso = ref<number | null>(null)
 
 const vehiculos = ref<any[]>([])
-const clientes = ref<any[]>([])
+
 const vinBusqueda = ref('')
 
 // cargar datos
@@ -33,9 +35,22 @@ const buscarPorId = async () => {
     alert('Vehículo no encontrado')
   }
 }
-const cargarClientes = async () => {
-  const res = await api.get('/clientes')
-  clientes.value = res.data
+const buscarClienteDPI = async () => {
+
+  try{
+const res = await api.get(`/clientes/dpi/${buscarCliente.value}`)
+  const cliente = res.data
+  nombreCliente.value = cliente.nombre
+  id_cliente.value=cliente.id_cliente
+  alert('Cliente encontrado correctamente')
+  }catch(error:any){
+    alert(error.response?.data?.message)
+    nombreCliente.value = ''
+    id_cliente.value =null
+  }
+
+
+
 }
 
 // crear
@@ -46,20 +61,18 @@ const crear = async () => {
       tipo_ingreso: tipo_ingreso.value,
       fecha: fecha.value,
       id_cliente: id_cliente.value,
-      valor_ingreso: tipo_ingreso.value ==='IMPORTACION'?0:valor_ingreso.value,
+      valor_ingreso: tipo_ingreso.value === 'IMPORTACION' ? 0 : valor_ingreso.value,
     })
 
-      const idIngreso = res.data.id
-      
-    if (tipo_ingreso.value === 'IMPORTACION') {
-      router.push({name: 'crear-importacion', params: {id: idIngreso}})
-    ;((vin.value = ''),
-      (tipo_ingreso.value = ''),
-      (fecha.value = ''),
-      (id_cliente.value = null),
-      (valor_ingreso.value = null))
+    const idIngreso = res.data.id
 
-  
+    if (tipo_ingreso.value === 'IMPORTACION') {
+      router.push({ name: 'crear-importacion', params: { id: idIngreso } })
+      ;((vin.value = ''),
+        (tipo_ingreso.value = ''),
+        (fecha.value = ''),
+        (id_cliente.value = null),
+        (valor_ingreso.value = null))
     }
     alert('Ingreso registrado')
   } catch (error: any) {
@@ -76,7 +89,7 @@ const formato = computed(() => {
 
 onMounted(async () => {
   await cargarVehiculos()
-  await cargarClientes()
+
 })
 </script>
 
@@ -117,17 +130,21 @@ onMounted(async () => {
         <input type="date" v-model="fecha" class="form-control" />
       </div>
 
-      <div class="mb-3">
-        <label>Cliente (opcional)</label>
-        <select v-model="id_cliente" class="form-select">
-          <option value="null">Ninguno</option>
-          <option v-for="c in clientes" :key="c.id_cliente" :value="c.id_cliente">
-            {{ c.nombre }}
-          </option>
-        </select>
+      <div class="mb-3" v-if="tipo_ingreso == 'RECIBIDO_COMO_PAGO'">
+        <label>Cliente</label>
+        <div class="mb-3 d-flex gap-2">
+          <input
+            type="text"
+            placeholder="Cliente seleccionado..."
+            v-model="nombreCliente"
+            disabled
+          />
+          <input type="text" placeholder="Buscar por DPI" v-model="buscarCliente" />
+          <button class="btn btn-success" @click="buscarClienteDPI()">Buscar</button>
+        </div>
       </div>
 
-      <div class="mb-3" v-if="tipo_ingreso !=='IMPORTACION'">
+      <div class="mb-3" v-if="tipo_ingreso !== 'IMPORTACION'">
         <label>Valor de ingreso</label>
         <input type="number" v-model="valor_ingreso" class="form-control" />
 
@@ -137,7 +154,7 @@ onMounted(async () => {
       </div>
 
       <button class="btn btn-success" @click="crear">Guardar</button>
-      <button class="btn btn-secondary mt-2" @click="router.push({name: 'ingresos-vehiculos'})">
+      <button class="btn btn-secondary mt-2" @click="router.push({ name: 'ingresos-vehiculos' })">
         Volver
       </button>
     </div>

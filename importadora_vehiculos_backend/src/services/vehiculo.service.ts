@@ -85,5 +85,12 @@ async listarVehiculos(filtros?: any) {
             message:"Precio de venta y estado actualizado correctamente "
         }
     }
+    async estadoVendido(vin:string){
+        if(!vin) throw new Error('VIN es requerido')
+        await this.vehiculoRepo.estadoVendido(vin)
+        return{
+            message: 'Estado a vendido cambiado correctamente'
+        }
+    }
 }
 

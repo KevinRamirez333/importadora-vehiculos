@@ -29,7 +29,7 @@ const editar = async()=>{
             fecha:fecha.value
         })
         alert("Costo editado correctamente")
-        router.push('/vehiculo-costos')
+        router.push({name:"vehiculo-costos"})
     } catch(error:any){
         alert(error.response?.data?.message||'Error al editar costo')
     }

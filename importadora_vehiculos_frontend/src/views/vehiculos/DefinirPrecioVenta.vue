@@ -34,7 +34,7 @@ const guardar = async () => {
       porcentaje: porcentaje.value,
     })
     alert('Precio de venta agregado correctamente')
-    router.push('/vehiculos')
+    router.push({name:'vehiculos'})
   } catch (error: any) {
     alert(error.response?.data?.message)
   }

@@ -87,7 +87,7 @@ const actualizar = async () => {
 
     alert('Vehículo actualizado')
 
-    router.push('/vehiculos')
+    router.push({name:"vehiculos"})
   } catch (error: any) {
     alert(error.response?.data?.message || 'Error al actualizar')
   }
