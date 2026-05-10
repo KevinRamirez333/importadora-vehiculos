@@ -21,8 +21,8 @@ const cargarUsuarios = async () => {
     const res = await api.get('/usuarios')
     usuarios.value = res.data
     usuariosOriginal.value = res.data
-  } catch (error) {
-    alert('Error cargando usuarios')
+  } catch (error:any) {
+    alert('Error al cargar usuarios')
   }
 }
 

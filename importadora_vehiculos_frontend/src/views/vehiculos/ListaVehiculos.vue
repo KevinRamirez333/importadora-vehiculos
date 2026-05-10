@@ -23,9 +23,14 @@ const modelos = ref<any[]>([])
 
 // Cargar datos iniciales
 const cargarVehiculos = async () => {
+  try{
   const res = await api.get('/vehiculos')
   vehiculos.value = res.data
   vehiculosCopia.value = res.data
+  } catch(error){
+    alert('Error al cargar vehículos')
+  }
+
 }
 
 const filtrar = async () => {
@@ -73,18 +78,15 @@ textoBusqueda.value = ''
 
 // Cargar marcas
 const cargarMarcas = async () => {
+  try{
   const res = await api.get('/marcas')
   marcas.value = res.data
+  } catch(error){
+    alert('Error al cargar marcas')
+  }
+
 }
 
-// Cargar modelos por marca
-const cargarModelos = async () => {
-  if (!marca.value) return
-
-  const res = await api.get(`/modelos/marca/${marca.value}`)
-
-  modelos.value = res.data
-}
 
 // Acciones
 const editar = (vin: string) => {

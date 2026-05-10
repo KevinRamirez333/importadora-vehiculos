@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
+import { formatearFecha } from '@/helpers/formatearFecha'
 
 const router = useRouter()
 const ingresos = ref<any[]>([])
@@ -26,10 +27,15 @@ const BuscarPorId = async () => {
 
 //Cargar ingresos de vehiculos
 const cargar = async () => {
-  const res = await api.get('/ingresos')
+  try{
+const res = await api.get('/ingresos')
   ingresos.value = res.data
   ingresosCopia.value = res.data
   console.log(ingresos.value)
+  } catch(error){
+    alert('Error al cargar ingreso de vehículos')
+  }
+  
 }
 const filtrar = async () => {
   const texto = textoBusqueda.value.toLowerCase().trim()
@@ -72,10 +78,6 @@ const activar = async (id: number) => {
   }
 }
 
-function formatearFecha(fecha: any) {
-  const [anio, mes, dia] = fecha.split('T')[0].split('-')
-  return `${dia}/${mes}/${anio}`
-}
 
 const limpiar = async () => {
   textoBusqueda.value = ''

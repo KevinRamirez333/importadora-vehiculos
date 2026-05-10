@@ -118,12 +118,28 @@ vin varchar(20) not null,
 id_cliente int not null,
 tipo_pago enum('CONTADO','CREDITO') not null,
 cuotas int null,
+enganche decimal(12,2),
 precio_venta decimal(12,2) not null,
+saldo_financiado decimal(12,2),
 estado enum('PENDIENTE','PAGADO','ANULADO') default 'PENDIENTE',
 
 constraint pk_id_venta primary key (id_venta),
 constraint fk_vin_venta foreign key(vin) references vehiculo(vin),
 constraint fk_cliente_venta foreign key(id_cliente) references cliente(id_cliente)
 );
+
+create table venta_cuota (
+  id_cuota int auto_increment,
+  fecha_pago date,
+  monto decimal(12,2),
+  interes decimal(12,2),
+  estado enum('PENDIENTE','PAGADO') default 'PENDIENTE',
+  id_venta int,
+  constraint pk_id_cuota primary key(id_cuota),
+  constraint fk_id_venta foreign key(id_venta) references venta(id_venta) 
+);
+
+
+
 
 

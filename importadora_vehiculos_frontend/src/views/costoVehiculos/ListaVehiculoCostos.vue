@@ -12,9 +12,14 @@ const tipoBusqueda = ref<'id' | 'vin'>('id')
 const idBusqueda = ref('')
 
 const cargar = async () => {
-  const res = await api.get('/vehiculo-costos')
+  try{
+const res = await api.get('/vehiculo-costos')
   costos.value = res.data
   costosOriginal.value = res.data
+  }catch(error){
+    alert('Error al cargar costos de vehículos')
+  }
+  
 }
 const filtrar = () => {
     const texto = textoBusqueda.value.toLowerCase().trim()
@@ -74,7 +79,7 @@ onMounted(cargar)
 <template>
   <div class="container mt-4">
     <div class="d-flex justify-content-between mb-3">
-      <h2>Lista de costo de vehiculos</h2>
+      <h2>Lista de costo de vehículos</h2>
       <button class="btn btn-primary" @click="router.push({ name: 'crear-vehiculo-costo' })">
         Crear
       </button>

@@ -10,34 +10,30 @@ const modelos = ref<any[]>([])
 const marcas = ref<any[]>([])
 const modelosCopia = ref<[]>([])
 
-
 const editandoId = ref<number | null>(null)
 const nombreEditado = ref('')
 const marcaEditada = ref<number | null>(null)
 
-
 const textoBusqueda = ref('')
 const id = ref('')
 
-
-const filtrar =()=>{
+const filtrar = () => {
   const texto = textoBusqueda.value.toLowerCase().trim()
-  
-  modelos.value = modelosCopia.value.filter((m:any)=>{
-    const estado= m.activo===1?'activo':'inactivo'
 
-    return(
-      m.id_modelo.toString().includes(texto)||
-      m.nombre.toLowerCase().includes(texto)||
-      m.marca.toLowerCase().includes(texto)||
-      estado===texto
+  modelos.value = modelosCopia.value.filter((m: any) => {
+    const estado = m.activo === 1 ? 'activo' : 'inactivo'
+
+    return (
+      m.id_modelo.toString().includes(texto) ||
+      m.nombre.toLowerCase().includes(texto) ||
+      m.marca.toLowerCase().includes(texto) ||
+      estado === texto
     )
   })
 }
 //buscar por id
 const buscarPorId = async () => {
   try {
-
     const res = await api.get(`/modelos/${id.value}`)
 
     modelos.value = [res.data]
@@ -54,14 +50,22 @@ const limpiar = () => {
 }
 // cargar datos
 const cargarModelos = async () => {
-  const res = await api.get('/modelos')
-  modelos.value = res.data
-  modelosCopia.value=res.data
+  try {
+    const res = await api.get('/modelos')
+    modelos.value = res.data
+    modelosCopia.value = res.data
+  } catch (error) {
+    alert('Error al cargar modelos')
+  }
 }
 
 const cargarMarcas = async () => {
-  const res = await api.get('/marcas')
-  marcas.value = res.data
+  try {
+    const res = await api.get('/marcas')
+    marcas.value = res.data
+  } catch (error) {
+    alert('Error al cargar marcas')
+  }
 }
 
 // editar
@@ -73,19 +77,17 @@ const editar = (m: any) => {
 
 // guardasr
 const guardar = async (id: number) => {
-  try{
-await api.put(`/modelos/${id}`, {
-    nombre: nombreEditado.value,
-    id_marca: marcaEditada.value,
-  })
-  alert('Modelo actualizado')
-  editandoId.value = null
-  cargarModelos()
-  } catch(error:any){
+  try {
+    await api.put(`/modelos/${id}`, {
+      nombre: nombreEditado.value,
+      id_marca: marcaEditada.value,
+    })
+    alert('Modelo actualizado')
+    editandoId.value = null
+    cargarModelos()
+  } catch (error: any) {
     alert(error.response?.data?.message || 'Error')
   }
-  
-
 }
 
 // cancelar
@@ -98,7 +100,6 @@ const desactivar = async (id: number) => {
   await api.post(`/modelos/desactivar/${id}`)
 
   await cargarModelos()
-
 }
 
 const activar = async (id: number) => {
@@ -113,12 +114,13 @@ onMounted(async () => {
 </script>
 
 <template>
- 
   <div class="container mt-4">
     <div class="d-flex justify-content-between mb-3">
       <h2>Modelos</h2>
 
-      <button class="btn btn-primary" @click="router.push({name: 'crear-modelo'})">Nuevo Modelo</button>
+      <button class="btn btn-primary" @click="router.push({ name: 'crear-modelo' })">
+        Nuevo Modelo
+      </button>
     </div>
     <div class="mb-3 d-flex gap-2">
       <input type="text" v-model="textoBusqueda" placeholder="Ingrese el valor de busqueda" />

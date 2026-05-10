@@ -108,5 +108,5 @@ export class VehiculoRepositoryMySQL implements VehiculoRepository{
       const query ="update vehiculo set id_estado =3 where vin=?"
       await connector.query(query,[vin])
     }
-    
+
 }

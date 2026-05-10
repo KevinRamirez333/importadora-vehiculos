@@ -15,22 +15,25 @@ const nombreEditado = ref('')
 
 // cargar
 const cargarMarcas = async () => {
-  const res = await api.get('/marcas')
-  marcas.value = res.data
-  marcasCopia.value = res.data
+  try {
+    const res = await api.get('/marcas')
+    marcas.value = res.data
+    marcasCopia.value = res.data
+  } catch (error) {
+    alert('Error al cargar marcas')
+  }
 }
 
-const filtrar =()=>{
+const filtrar = () => {
   const texto = textoBusqueda.value.toLowerCase().trim()
 
-  marcas.value = marcasCopia.value.filter((m:any)=>{
+  marcas.value = marcasCopia.value.filter((m: any) => {
+    const estado = m.activo === 1 ? 'activo' : 'inactivo'
 
-    const estado=m.activo===1?'activo': 'inactivo'
-
-    return(
-      m.id_marca.toString().includes(texto)||
-      m.nombre.toLowerCase().includes(texto)||
-      estado===texto
+    return (
+      m.id_marca.toString().includes(texto) ||
+      m.nombre.toLowerCase().includes(texto) ||
+      estado === texto
     )
   })
 }
@@ -52,7 +55,7 @@ const buscarPorId = async () => {
     marcas.value = [] // opcional: limpiar resultados
   }
 }*/
-const limpiar = () => { 
+const limpiar = () => {
   textoBusqueda.value = ''
   cargarMarcas()
 }
@@ -97,7 +100,9 @@ onMounted(cargarMarcas)
     <div class="d-flex justify-content-between mb-3">
       <h2>Listado de Marcas</h2>
 
-      <button class="btn btn-primary" @click="router.push({name: 'crear-marca'})">Nueva Marca</button>
+      <button class="btn btn-primary" @click="router.push({ name: 'crear-marca' })">
+        Nueva Marca
+      </button>
     </div>
     <div class="mb-3 d-flex gap-2">
       <input type="text" v-model="textoBusqueda" placeholder="Ingrese el valor de busqueda" />

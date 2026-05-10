@@ -10,27 +10,31 @@ const id = ref('')
 const textoBusqueda = ref('')
 
 const cargar = async () => {
-  const res = await api.get('/importaciones')
-  importaciones.value = res.data
-  importacionesCopia.value = res.data
+  try {
+    const res = await api.get('/importaciones')
+    importaciones.value = res.data
+    importacionesCopia.value = res.data
+  } catch (error) {
+    alert('Error al cargar importaciones')
+  }
 }
 
-const filtrar = ()=>{
+const filtrar = () => {
   const texto = textoBusqueda.value.toLowerCase().trim()
 
-  importaciones.value = importacionesCopia.value.filter((i:any)=>{
-    return(
-      i.id_importacion.toString().includes(texto)||
-      i.vin.toLowerCase().includes(texto)||
-      i.pais_origen.toLowerCase().includes(texto)||
-      i.costo_dolares.toString().includes(texto)||
-      i.tipo_cambio.toString().includes(texto)||
+  importaciones.value = importacionesCopia.value.filter((i: any) => {
+    return (
+      i.id_importacion.toString().includes(texto) ||
+      i.vin.toLowerCase().includes(texto) ||
+      i.pais_origen.toLowerCase().includes(texto) ||
+      i.costo_dolares.toString().includes(texto) ||
+      i.tipo_cambio.toString().includes(texto) ||
       i.estado.toLowerCase().includes(texto)
     )
   })
 }
 const editar = async (id: number) => {
-  router.push({name: 'editar-importacion', params: {id}})
+  router.push({ name: 'editar-importacion', params: { id } })
 }
 
 const anular = async (id: number) => {
@@ -68,12 +72,17 @@ onMounted(cargar)
   <div class="container mt-4">
     <div class="d-flex justify-content-between mb-3">
       <h2>Lista de Importaciones</h2>
-      <button class="btn btn-primary" @click="router.push({name:'crear-ingreso-vehiculo'})">
+      <button class="btn btn-primary" @click="router.push({ name: 'crear-ingreso-vehiculo' })">
         Crear
       </button>
     </div>
     <div class="mb-3 d-flex gap-2">
-      <input type="text" class="form-control" v-model="textoBusqueda" placeholder="Ingrese valor de busqueda" />
+      <input
+        type="text"
+        class="form-control"
+        v-model="textoBusqueda"
+        placeholder="Ingrese valor de busqueda"
+      />
       <button class="btn btn-success" @click="filtrar()">Buscar</button>
       <button class="btn btn-warning" @click="Limpiar()">Limpiar</button>
     </div>

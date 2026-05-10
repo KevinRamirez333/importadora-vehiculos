@@ -51,6 +51,18 @@ export class VentaController extends BaseController{
             res.status(500).send({message:error.message})
         }
     }
+    @GET()
+    @route('/cliente/:id')
+    public async buscarVentasPorCliente(req:Request, res:Response){
+        try{
+            const id = Number(req.params.id)
+            const result = await this.service.buscarVentasPorCliente(id)
+            res.status(200).send(result)
+        }
+        catch(error:any){
+            res.status(500).send({message:error.message})
+        }
+    }
     @POST()
     @route('/anular/:id')
     public async cancelarVenta(req:Request,res:Response){

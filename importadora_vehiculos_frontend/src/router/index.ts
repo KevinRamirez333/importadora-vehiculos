@@ -29,6 +29,8 @@ import DashboardLayout from '@/views/dashboard/DashboardLayout.vue'
 import Inicio from '@/views/dashboard/Inicio.vue'
 import EditarCliente from '@/views/clientes/EditarCliente.vue'
 import CrearVenta from '@/views/ventas/CrearVenta.vue'
+import ComprasCliente from '@/views/ventas/ComprasCliente.vue'
+import ListaVentas from '@/views/ventas/ListaVentas.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -174,9 +176,19 @@ const router = createRouter({
           component: EditarCliente
         },
         {
+          path:'ventas',
+          name:'ventas',
+          component: ListaVentas
+        },
+        {
           path: 'ventas/crear',
           name:'crear-venta',
           component: CrearVenta
+        },
+        {
+          path: 'ventas/cliente/:id',
+          name: 'compras-cliente',
+          component: ComprasCliente
         },
       ],
     },

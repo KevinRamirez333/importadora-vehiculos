@@ -4,7 +4,6 @@ import api from '@/services/api'
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
-
 const totalVehiculos = ref(0)
 
 onMounted(async () => {
@@ -21,12 +20,12 @@ onMounted(async () => {
 
 <template>
   <div>
-
     <!-- CONTENIDO DEL DASHBOARD -->
-    <div class="dashboard">
-      <h1>Bienvenido al Sistema de Gestión</h1>
-      <p>
-        Utiliza el menú superior para administrar las operaciones de la importadora de vehículos.
+    <div class="ps-3">
+      <h1 class="fw-bold display-5 mb-2 text-center">Inicio</h1>
+
+      <p class="text-muted fs-5 mb-0 text-center">
+        Visualiza el estado general de la importadora y administra las operaciones del sistema.
       </p>
 
       <div class="cards">

@@ -12,28 +12,32 @@ const textoBusqueda = ref('')
 const clientesCopia = ref<any[]>([])
 
 const cargarClientes = async () => {
+  try{
   const res = await api.get('/clientes')
   clientes.value = res.data
   clientesCopia.value = res.data
+  } catch(error){
+    alert('Error al cargar clientes')
+  }
+
 }
 
-const filtrar = ()=>{
+const filtrar = () => {
   const texto = textoBusqueda.value.toLowerCase().trim()
 
-  clientes.value = clientesCopia.value.filter((c:any)=>{
-    const estado = c.estado ? 'activo':'inactivo'
-    return(
-      c.id_cliente.toString().includes(texto)||
-      c.nombre.toLowerCase().includes(texto)||
-      c.apellido.toLowerCase().includes(texto)||
-      c.nit.toLowerCase().includes(texto)||
-      c.dpi.toLowerCase().includes(texto)||
-      c.telefono.toLowerCase().includes(texto)||
-      c.direccion.toLowerCase().includes(texto)||
-      estado===texto
+  clientes.value = clientesCopia.value.filter((c: any) => {
+    const estado = c.estado ? 'activo' : 'inactivo'
+    return (
+      c.id_cliente.toString().includes(texto) ||
+      c.nombre.toLowerCase().includes(texto) ||
+      c.apellido.toLowerCase().includes(texto) ||
+      c.nit.toLowerCase().includes(texto) ||
+      c.dpi.toLowerCase().includes(texto) ||
+      c.telefono.toLowerCase().includes(texto) ||
+      c.direccion.toLowerCase().includes(texto) ||
+      estado === texto
     )
-  }) 
-
+  })
 }
 
 const buscar = async () => {
@@ -76,6 +80,10 @@ const limpiar = () => {
   textoBusqueda.value = ''
   cargarClientes()
 }
+
+const verCompras= (id_cliente:number)=>{
+  router.push({name: 'compras-cliente', params:{id:id_cliente}})
+}
 onMounted(cargarClientes)
 </script>
 
@@ -83,10 +91,9 @@ onMounted(cargarClientes)
   <div class="container mt-4">
     <div class="d-flex justify-content-between mb-3">
       <h2>Lista de Clientes</h2>
-      <button class="btn btn-primary" @click="router.push({name:'crear-cliente'})">Crear</button>
+      <button class="btn btn-primary" @click="router.push({ name: 'crear-cliente' })">Crear</button>
     </div>
     <div class="mb-3 d-flex gap-2">
-    
       <input
         type="text"
         v-model="textoBusqueda"
@@ -127,17 +134,18 @@ onMounted(cargarClientes)
           <td>
             <button
               class="btn btn-warning btn-sm me-2"
-              @click="router.push({name: 'editar-cliente', params:{id: c.id_cliente}})"
+              @click="router.push({ name: 'editar-cliente', params: { id: c.id_cliente } })"
             >
               Editar
             </button>
 
-            <button v-if="c.estado" class="btn btn-danger btn-sm" @click="desactivar(c.id_cliente)">
+            <button v-if="c.estado" class="btn btn-danger btn-sm me-2" @click="desactivar(c.id_cliente)">
               Desactivar
             </button>
             <button v-else class="btn btn-success btn-sm" @click="activar(c.id_cliente)">
               Activar
             </button>
+            <button class="btn btn-secondary btn-sm" @click="verCompras(c.id_cliente)">Ver compras</button>
           </td>
         </tr>
       </tbody>

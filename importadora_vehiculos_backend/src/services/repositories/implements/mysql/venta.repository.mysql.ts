@@ -19,7 +19,10 @@ export class VentaRepositoryMySQL implements VentaRepository {
         await connector.query(query,values)
     }
     async findAll(): Promise<Venta[]> {
-        const query=`select * from venta`
+        const query=`select v.*, c.nombre, c.apellido 
+        from venta v
+        inner join cliente c on v.id_cliente=c.id_cliente
+        where v.id_cliente`
         const [rows]:any= await connector.query(query)
         return rows
     }
@@ -40,5 +43,12 @@ export class VentaRepositoryMySQL implements VentaRepository {
         const query =`update venta set estado='ANULADO' where id_venta=?`
 
         await connector.query(query,[id])
+    }
+    async buscarVentasPorCliente(id_cliente:number):Promise<any[]>{
+      const query=`select v.*, c.nombre, c.apellido from venta v
+      inner join cliente c on v.id_cliente = c.id_cliente
+      where v.id_cliente=?`
+      const [rows]:any = await connector.query(query,[id_cliente])
+      return rows
     }
 }

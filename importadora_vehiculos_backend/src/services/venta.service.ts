@@ -21,8 +21,18 @@ export class VentaService {
             if(vehiculo.id_estado===3 || vehiculo.id_estado===1){
                 throw new Error('Este vehiculo no esta disponible')
             }
-            await this.ventaRepo.create(venta);
+            if (venta.tipo_pago==='CONTADO'){
+                const ventaData = {
+                ...venta,
+                precio_venta: vehiculo.precio_venta
+            }
+            
+            await this.ventaRepo.create(ventaData);
             await this.vehiculoService.estadoVendido(venta.vin);
+            }
+            else if (venta.tipo_pago==='CREDITO'){
+                
+            }
 
             await connection.commit()
 
@@ -71,5 +81,15 @@ export class VentaService {
         }
         await this.ventaRepo.anularVenta(id)
         return{message:'Venta anulada correctamente'}
+    }
+    async buscarVentasPorCliente(id:number){
+        if(!id){
+            throw new Error('ID de cliente es requerido')
+        }
+        const ventas = await this.ventaRepo.buscarVentasPorCliente(id)
+        if(!ventas|| ventas.length===0){
+            throw new Error('Ventas no encontradas para este cliente')
+        }
+        return ventas
     }
 }
