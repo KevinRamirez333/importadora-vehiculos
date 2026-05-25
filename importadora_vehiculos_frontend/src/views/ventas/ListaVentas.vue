@@ -6,11 +6,14 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const ventas = ref<any[]>([])
+const textoBusqueda = ref('')
+const ventasCopia = ref<any[]>([])
 
 const cargar = async () => {
   try {
     const res = await api.get('/ventas')
     ventas.value = res.data
+    ventasCopia.value = res.data
   } catch (error: any) {
     alert(error.response?.data?.message)
   }
@@ -26,6 +29,125 @@ const anular = async (id:string)=>{
 
   }
 }
+const GenerarComprobante = async (id_venta: string, nombreCliente?: string) => {
+  try {
+
+    if (!confirm('Desea generar comprobante de pago')) return;
+
+    const response = await api.get(
+      `/ventas/comprobante/${id_venta}`,
+      {
+        responseType: 'blob'
+      }
+    );
+
+    const blob = new Blob(
+      [response.data],
+      { type: 'application/pdf' }
+    );
+
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+
+    link.href = url;
+
+    // Obtener nombre desde backend
+    const disposition = response.headers['content-disposition'];
+
+    let filename = '';
+
+    if (disposition) {
+      const match = disposition.match(/filename="(.+)"/);
+      if (match?.[1]) {
+        filename = match[1];
+      }
+    }
+
+    if (!filename && nombreCliente) {
+      filename = `${nombreCliente.replace(/\s+/g, '_')}_Comprobante.pdf`;
+    }
+
+    if (!filename) filename = 'comprobante.pdf';
+
+    link.download = filename;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+
+  } catch (error) {
+
+    alert('Error al generar comprobante');
+
+  }
+};
+const filtrar = () => {
+
+  try {
+
+    const texto =
+      textoBusqueda.value.toLowerCase().trim()
+
+    ventas.value = ventasCopia.value.filter((v: any) => {
+      const fecha=formatearFecha(v.fecha)
+
+      return (
+
+        v.id_venta?.toString().includes(texto) ||
+
+        fecha?.toString().includes(texto) ||
+
+        v.vin?.toLowerCase().includes(texto) ||
+
+        v.id_cliente?.toString().includes(texto) ||
+
+        v.nombre?.toLowerCase().includes(texto) ||
+
+        v.tipo_pago?.toLowerCase().includes(texto) ||
+
+        (v.cuotas ?? '')
+          .toString()
+          .toLowerCase()
+          .includes(texto) ||
+
+        (v.enganche ?? '')
+          .toString()
+          .toLowerCase()
+          .includes(texto) ||
+
+        (v.saldo_financiado ?? '')
+          .toString()
+          .toLowerCase()
+          .includes(texto) ||
+
+        (v.precio_venta ?? '')
+          .toString()
+          .toLowerCase()
+          .includes(texto) ||
+
+        v.estado?.toLowerCase().includes(texto)
+
+      )
+
+    })
+
+  } catch (error) {
+
+    alert('Error al filtrar')
+
+  }
+
+}
+const limpiar = async () => {
+  textoBusqueda.value = ''
+  await cargar()
+}
+
 onMounted(cargar)
 </script>
 
@@ -38,9 +160,10 @@ onMounted(cargar)
     <div class="mb-3 d-flex gap-2">
         <input type="text"
         class="form-control"
-        placeholder="Ingrese el valor de busqueda">
-        <button class="btn btn-success">Buscar</button>
-        <button class="btn btn-warning">Limpiar</button>
+        placeholder="Ingrese el valor de busqueda"
+        v-model="textoBusqueda">
+        <button class="btn btn-success" @click="filtrar()">Buscar</button>
+        <button class="btn btn-warning" @click="limpiar()">Limpiar</button>
     </div>
     <table class="table table-bordered text-center">
         <thead class="table-dark">
@@ -73,10 +196,14 @@ onMounted(cargar)
                 <td>{{ v.saldo_financiado||'-' }}</td>
                 <td>{{v.precio_venta}}</td>
                 <td>{{ v.estado }}</td>
-                <td>
+                <td class="d-flex justify-content-center gap-2">
                     <button
                     v-if="v.estado ==='PAGADO'|| v.estado==='PENDIENTE'"
-                     class="btn btn-danger" @click="anular(v.id_venta)">Anular</button>
+                     class="btn btn-danger btn-sm me-2" @click="anular(v.id_venta)">Anular</button>
+
+                     <button class="btn btn-secondary btn-sm me-2" @click="GenerarComprobante(v.id_venta, v.nombre)">
+                      Descargar
+                     </button>
                      
                 </td>
             </tr>

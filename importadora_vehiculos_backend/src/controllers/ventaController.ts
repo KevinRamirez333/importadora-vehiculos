@@ -25,6 +25,34 @@ export class VentaController extends BaseController{
             res.status(500).send({message:error.message})
         }
     }
+@GET()
+@route('/comprobante/:id')
+public async generarComprobante(req: Request, res: Response) {
+    try {
+
+        const id = Number(req.params.id)
+
+        const { doc, nombreArchivo } =
+            await this.service.generarComprobante(id)
+
+        res.setHeader('Content-Type', 'application/pdf')
+
+        res.setHeader(
+            'Content-Disposition',
+            `attachment; filename="${nombreArchivo}"`
+        )
+
+        doc.pipe(res)
+        doc.end()
+
+    } catch (error: any) {
+
+        res.status(500).send({
+            message: error.message
+        })
+
+    }
+}
     @GET()
     @route('/:id')
     public async buscarPorId(req:Request, res:Response){

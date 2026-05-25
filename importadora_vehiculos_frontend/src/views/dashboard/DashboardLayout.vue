@@ -22,6 +22,7 @@ const menuOptions = computed(() => {
     { id: 2, name: 'Vehiculos', route: { name: 'vehiculos' } },
     { id: 3, name: 'Clientes', route: { name: 'clientes' } },
     { id: 4, name: 'Ventas', route: '/dashboard/ventas' },
+    {id:6, name: 'Cuotas', route: {name: 'cuotas'}},
     { id: 5, name: 'Cambiar contraseña', route: { name: 'cambiar-password' } },
   ]
 

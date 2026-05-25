@@ -1,6 +1,6 @@
 export interface Cuota {
     id_cuota?:number
-    fecha_pago:string
+    fecha_pago:Date
     monto: number
     interes: number
     estado: 'PENDIENTE'|'PAGADO'

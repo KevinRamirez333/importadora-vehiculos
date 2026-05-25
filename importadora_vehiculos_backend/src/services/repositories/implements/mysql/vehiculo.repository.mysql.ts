@@ -1,6 +1,7 @@
 import { VehiculoRepository } from "../../vehiculo.repository";
 import { Vehiculo } from "../../domain/vehiculo";
 import connector from "../../../../common/persistence/persistence.mysql";
+import { PoolConnection } from "mysql2/promise";
 
 export class VehiculoRepositoryMySQL implements VehiculoRepository{
     async create(vehiculo:Vehiculo):Promise<void>{
@@ -104,9 +105,9 @@ export class VehiculoRepositoryMySQL implements VehiculoRepository{
 
         await connector.query(query,[vin])
     }
-    async estadoVendido(vin: string): Promise<void> {
+    async estadoVendido(vin: string, connection:PoolConnection): Promise<void> {
       const query ="update vehiculo set id_estado =3 where vin=?"
-      await connector.query(query,[vin])
+      await connection.query(query,[vin])
     }
 
 }

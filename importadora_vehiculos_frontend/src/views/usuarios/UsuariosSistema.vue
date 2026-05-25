@@ -150,19 +150,38 @@ onMounted(cargarUsuarios)
       </tbody>
     </table>
   </div>
-  <div v-if="mostrarModalPassword" class="modal-overlay">
-    <div class="modal">
+ <div v-if="mostrarModalPassword"
+     class="modal fade show d-flex justify-content-center align-items-center"
+     tabindex="-1">
+
+  <div class="modal-dialog">
+    
+    <div class="modal-content p-4">
+
       <h3>Resetear contraseña</h3>
 
-      <input type="password" v-model="nuevaPassword" placeholder="Nueva contraseña" />
+      <input
+        type="password"
+        v-model="nuevaPassword"
+        placeholder="Nueva contraseña"
+        class="form-control mb-3"
+      />
 
-      <div class="modal-buttons">
-        <button class="btn-confirmar" @click="confirmarResetPassword">Guardar</button>
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-success"
+                @click="confirmarResetPassword">
+          Guardar
+        </button>
 
-        <button class="btn-cancelar" @click="mostrarModalPassword = false">Cancelar</button>
+        <button class="btn btn-danger"
+                @click="mostrarModalPassword = false">
+          Cancelar
+        </button>
       </div>
+
     </div>
   </div>
+</div>
 </template>
 
 <style scoped>
@@ -352,16 +371,7 @@ onMounted(cargarUsuarios)
 
 /* CAJA MODAL */
 
-.modal {
-  background: white;
-  padding: 25px;
-  border-radius: 10px;
-  width: 350px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
+
 
 /* INPUT */
 
@@ -370,6 +380,7 @@ onMounted(cargarUsuarios)
   border-radius: 6px;
   border: 1px solid #ccc;
   font-size: 14px;
+  
 }
 
 /* BOTONES */

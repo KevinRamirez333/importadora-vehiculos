@@ -31,6 +31,7 @@ import EditarCliente from '@/views/clientes/EditarCliente.vue'
 import CrearVenta from '@/views/ventas/CrearVenta.vue'
 import ComprasCliente from '@/views/ventas/ComprasCliente.vue'
 import ListaVentas from '@/views/ventas/ListaVentas.vue'
+import ListaCuota from '@/views/cuotas/ListaCuota.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -189,6 +190,11 @@ const router = createRouter({
           path: 'ventas/cliente/:id',
           name: 'compras-cliente',
           component: ComprasCliente
+        },
+        {
+          path:'cuotas',
+          name:'cuotas',
+          component: ListaCuota
         },
       ],
     },

@@ -1,10 +1,11 @@
 import { CuotaRepository } from "../../cuota.repository";
 import { Cuota } from "../../domain/cuota";
 import connector from "../../../../common/persistence/persistence.mysql"
+import { PoolConnection } from "mysql2/promise";
 
 export class CuotaRepositoryMySQL implements CuotaRepository{
-    async generarCuotas(data:Cuota): Promise<void> {
-        const query=`insert into cuota ( intereses, fecha_pago, monto, estado, id_venta)
+    async generarCuotas(data:Cuota, connection:PoolConnection): Promise<void> {
+        const query=`insert into venta_cuota ( interes, fecha_pago, monto, estado, id_venta)
         values (?,?,?,?,?)`
         const dataCuota =[
             data.interes,
@@ -13,6 +14,6 @@ export class CuotaRepositoryMySQL implements CuotaRepository{
             data.estado,
             data.id_venta
         ]
-        await connector.query(query,dataCuota)
+        await connection.query(query,dataCuota)
     }
 }

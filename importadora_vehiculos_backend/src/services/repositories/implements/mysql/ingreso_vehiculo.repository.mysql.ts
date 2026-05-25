@@ -49,7 +49,7 @@ export class IngresoVehiculoRepositoryMySQL implements IngresoVehiculoRepository
   }
 
   async findByVin (vin:string): Promise<IngresoVehiculo|null>{
-    const [rows]:any=await connector.query(`select * from ingreso_vehiculo where vin=?`,[vin])
+    const [rows]:any=await connector.query(`select * from ingreso_vehiculo where vin=? and estado_ingreso ='ACTIVO'`,[vin])
     return rows.length ? rows[0]:null
   }
  

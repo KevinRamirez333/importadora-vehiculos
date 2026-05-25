@@ -51,18 +51,18 @@ watch(id_marca, () => {
 // Guardar vehículo
 const guardar = async () => {
   try {
-    const payload = {
+    const datosVehiculo = {
       vin: vin.value,
       placa: placa.value,
       anio: anio.value,
       color: color.value,
       precio_venta: (precio_venta.value = null),
       id_marca: id_marca.value,
-      id_estado: id_estado.value,
+      id_estado: 1,
       id_modelo: id_modelo.value,
     }
 
-    await api.post('/vehiculos', payload)
+    await api.post('/vehiculos', datosVehiculo)
 
     alert('Vehículo creado correctamente')
 

@@ -1,3 +1,4 @@
+import { PoolConnection } from "mysql2/promise";
 import { Vehiculo } from "./domain/vehiculo";
 
 export interface VehiculoRepository{
@@ -8,5 +9,5 @@ export interface VehiculoRepository{
     deactivate(vin:string):Promise<void>
     activate(vin:string):Promise<void>
     actualizarPrecio(vin:string,precio:number, porcentaje:number):Promise<void>
-    estadoVendido(vin:string):Promise<void>
+    estadoVendido(vin:string, connection:PoolConnection):Promise<void>
 }

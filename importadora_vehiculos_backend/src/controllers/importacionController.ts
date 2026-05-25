@@ -22,7 +22,6 @@ export class ImportacionController extends BaseController{
             const data= await this.service.listarImportacion()
             res.send(data)
         }catch(error:any){
-            console.log(error)
             res.status(500).send({message:error.message})
         }
     }

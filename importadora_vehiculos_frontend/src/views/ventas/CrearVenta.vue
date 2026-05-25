@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { redondearDecimales } from '@/helpers/redondearDecimales'
 import api from '@/services/api'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+
 
 const router = useRouter()
 const fecha = ref('')
@@ -10,7 +12,7 @@ const id_cliente = ref(0)
 const tipo_pago = ref('')
 const cuotas = ref(0)
 const precio_venta_mostrar = ref(0)
-const precio_venta = ref(0);
+
 
 const estado = computed(() => {
   return tipo_pago.value === 'CONTADO' ? 'PAGADO' : 'PENDIENTE'
@@ -25,15 +27,15 @@ const tasaInteres = 0.15
 
 const precioFinanciado = computed(() => {
   if (tipo_pago.value != 'CREDITO') return 0
-  return precio_venta.value * (1 + tasaInteres)
+  return redondearDecimales(precio_venta_mostrar.value * (1 + tasaInteres))
 })
 const enganche = computed(() => {
   if (tipo_pago.value != 'CREDITO') return 0
-  return Math.round(precioFinanciado.value * porcentajeEnganche * 100) / 100
+  return redondearDecimales(precioFinanciado.value * porcentajeEnganche )
 })
 
 const saldoFinanciar = computed(() => {
-  return precioFinanciado.value - enganche.value
+  return redondearDecimales(precioFinanciado.value - enganche.value)
 })
 
 const cuotasValidas = [6, 12, 24]
@@ -48,7 +50,7 @@ const crear = async () => {
       id_cliente: id_cliente.value,
       tipo_pago: tipo_pago.value,
       cuotas: cuotas.value,
-      estado: estado.value,
+      estado: estado.value
     })
 
     alert('Venta guardada correctamente')
@@ -65,7 +67,6 @@ const crear = async () => {
     tipo_pago.value = ''
     cuotas.value = 0
     precio_venta_mostrar.value = 0
-    precio_venta.value =0
   } catch (error: any) {
     alert(error.response?.data?.message || 'Error al guardar la venta')
   }
@@ -179,7 +180,7 @@ const buscarCliente = async () => {
     
       <div class="mb-3" v-if="tipo_pago=='CONTADO'">
         <label>Precio Venta</label>
-        <input type="number" class="form-control" v-model="precio_venta" disabled />
+        <input type="number" class="form-control" v-model="precio_venta_mostrar" disabled />
       </div>
       <div class="mb-3">
         <label>Estado</label>

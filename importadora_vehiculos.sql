@@ -44,7 +44,6 @@ constraint fk_id_marca_modelo foreign key(id_marca) references marca(id_marca)
 
 create table vehiculo(
 vin varchar(20),
-modelo int,
 placa varchar(20),
 anio int,
 color varchar(20),
@@ -139,7 +138,19 @@ create table venta_cuota (
   constraint fk_id_venta foreign key(id_venta) references venta(id_venta) 
 );
 
+select * from venta;
+select * from venta_cuota;
+select * from estado;
 
 
+select vc.*, v.id_venta
+from venta_cuota vc 
+inner join venta v
+on vc.id_venta = v.id_venta 
+
+inner join cliente c
+on c.id_cliente = v.id_cliente
+
+where c.dpi = 3209506460502;
 
 

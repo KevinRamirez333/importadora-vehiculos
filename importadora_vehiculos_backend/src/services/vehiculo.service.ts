@@ -5,6 +5,7 @@ import { MarcaRepositoryMySQL } from "./repositories/implements/mysql/marca.repo
 import { EstadoRepositoryMySQL } from "./repositories/implements/mysql/estado.repository.mysql";
 import { IngresoVehiculoService } from "./ingreso_vehiculo.service";
 import { VehiculoCostoService } from "./vehiculo_costo.service";
+import { PoolConnection } from "mysql2/promise";
 
 
 export class VehiculoService{
@@ -85,9 +86,9 @@ async listarVehiculos(filtros?: any) {
             message:"Precio de venta y estado actualizado correctamente "
         }
     }
-    async estadoVendido(vin:string){
+    async estadoVendido(vin:string, connection:PoolConnection){
         if(!vin) throw new Error('VIN es requerido')
-        await this.vehiculoRepo.estadoVendido(vin)
+        await this.vehiculoRepo.estadoVendido(vin,connection)
         return{
             message: 'Estado a vendido cambiado correctamente'
         }

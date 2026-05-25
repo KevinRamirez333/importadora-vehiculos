@@ -35,7 +35,7 @@ const cargarVehiculos = async () => {
 
 const filtrar = async () => {
   const texto = textoBusqueda.value.toLowerCase().trim()
-  console.log(vehiculosCopia.value)
+
   vehiculos.value = vehiculosCopia.value.filter((v: any) => {
     const precio_venta = v.precio_venta?.toString() || ''
     const activo = v.activo ? 'activo' : 'inactivo'
