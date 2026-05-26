@@ -1,112 +1,100 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import axios from 'axios'
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
 
 const email = ref('')
 const password = ref('')
+const loading = ref(false)
+const error = ref('')
+
 const router = useRouter()
 
 const login = async () => {
+  error.value = ''
+  loading.value = true
+
   try {
-    console.log(import.meta.env.VITE_API_URL)
-    const response = await api.post(
-      '/usuarios/login',
-      {
-        email: email.value,
-        password: password.value
-      }
-    )
+    const response = await api.post('/usuarios/login', {
+      email: email.value,
+      password: password.value,
+    })
 
     localStorage.setItem('token', response.data.token)
 
-    router.push('/dashboard/inicio')
-
-  } catch (error) {
-    alert('Credenciales incorrectas')
+    router.push('/panel/inicio')
+  } catch (err) {
+    error.value = 'Credenciales incorrectas'
+  } finally {
+    loading.value = false
   }
 }
 </script>
 
 <template>
-  <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="@/assets/importadora_vehiculos.jpeg"
-      width="200"
-      height="200"
-    />
+  <div class="container-fluid vh-100">
+    <div class="row h-100">
 
-    <div class="wrapper">
-      <h1 >Importadora de Vehículos</h1>
+      <!-- Lado izquierdo (branding suave) -->
+      <div class="col-md-6 d-none d-md-flex bg-dark-subtle text-dark justify-content-center align-items-center flex-column">
 
- 
+        <img
+          src="@/assets/importadora_vehiculos.jpeg"
+          alt="Logo"
+          class="rounded mb-3 shadow-sm"
+          width="140"
+        />
+
+        <h2 class="fw-bold">Importadora de Vehículos</h2>
+
+        <p class="text-center px-4 text-muted">
+          Sistema de gestión de inventario, ventas e importaciones
+        </p>
+
+      </div>
+
+      <!-- Lado derecho -->
+      <div class="col-md-6 d-flex justify-content-center align-items-center bg-light">
+
+        <div class="card shadow border-0 p-4 w-100 bg-white" style="max-width: 380px;">
+
+          <h4 class="mb-1 text-dark">Iniciar sesión</h4>
+          <p class="text-muted mb-4">Accede al sistema</p>
+
+          <div v-if="error" class="alert alert-danger py-2">
+            {{ error }}
+          </div>
+
+          <div class="mb-3">
+            <input
+              v-model="email"
+              type="email"
+              class="form-control"
+              placeholder="Correo electrónico"
+            />
+          </div>
+
+          <div class="mb-3">
+            <input
+              v-model="password"
+              type="password"
+              class="form-control"
+              placeholder="Contraseña"
+            />
+          </div>
+
+          <button
+            class="btn btn-dark w-100"
+            @click="login"
+            :disabled="loading"
+          >
+            {{ loading ? 'Ingresando...' : 'Ingresar' }}
+          </button>
+
+        </div>
+
+      </div>
+
     </div>
-  </header>
-  <div>
-    <h2>Login</h2>
-
-    <input v-model="email" placeholder="Email" />
-    <input v-model="password" type="password" placeholder="Password" />
-
-    <button @click="login">Ingresar</button>
   </div>
 </template>
-
-<style scoped>
-/* Contenedor del login */
-div {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  width: 420px;        /* Más ancho */
-  margin: 40px auto;
-}
-
-/* Inputs más grandes */
-input {
-  padding: 15px 18px;  /* Más altos */
-  border-radius: 10px;
-  border: 1px solid #dcdcdc;
-  font-size: 16px;     /* Texto más grande */
-  width: 100%;         /* Que ocupen todo el contenedor */
-  transition: all 0.3s ease;
-  outline: none;
-}
-
-/* Efecto focus */
-input:focus {
-  border-color: #42b983;
-  box-shadow: 0 0 8px rgba(66, 185, 131, 0.3);
-}
-
-/* Botón más grande */
-button {
-  padding: 15px;
-  border-radius: 10px;
-  border: none;
-  background-color: #42b983;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-button:hover {
-  background-color: #369f6e;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-.logo {
-  display: block;
-  margin: 0 auto 20px auto;
-}
-h1{
-  text-align: center;
-}
-</style>

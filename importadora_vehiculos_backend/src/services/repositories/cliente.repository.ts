@@ -9,4 +9,5 @@ export interface ClienteRepository{
     editar(id:number,cliente:Partial<Cliente>):Promise<void>
     desactivar(id:number):Promise<void>
     activar(id:number):Promise<void>
+    
 }

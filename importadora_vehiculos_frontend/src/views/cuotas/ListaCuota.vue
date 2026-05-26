@@ -1,110 +1,196 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import api from '@/services/api'
+import { formatearFecha } from '@/helpers/formatearFecha'
+import ModalPagarCuota from '@/components/cuotas/ModalPagarCuota.vue'
+import { formatearValor } from '@/helpers/formatearValor'
+import AlertaBase from '@/components/alertas/AlertaBase.vue'
+
+interface Cuota {
+  id_cuota: number
+  fecha_pago: string
+  monto: number
+  interes: number
+  estado: string
+  id_venta: number
+  nombre_cliente: string
+  fecha_pagado: string
+}
+
+const route = useRoute()
+
+const cuotas = ref<Cuota[]>([])
+const modalVisible = ref(false)
+const cuotaSeleccionada = ref<number | null>(null)
+const idVenta = route.params.idVenta
+
+const alertaVisible = ref(false)
+const alertaMensaje = ref('')
+const alertaTitulo = ref('')
+const alertaTipo = ref<'success' | 'error'>('error')
+
+const cargarCuotas = async () => {
+  try {
+    const res = await api.get(`/cuotas/venta/${idVenta}`)
+    cuotas.value = res.data
+  } catch (error) {
+    alertaTitulo.value = 'Error'
+    alertaMensaje.value = 'Error al cargar las cuotas'
+    alertaTipo.value = 'error'
+    alertaVisible.value = true
+  }
+}
+
+const abrirModalPago = (idCuota: number) => {
+  cuotaSeleccionada.value = idCuota
+  modalVisible.value = true
+}
+const cerrarModal = () => {
+  modalVisible.value = false
+}
+
+/* TOTAL PAGADO */
+const totalPagado = computed(() => {
+  return cuotas.value
+    .filter((c) => c.estado === 'PAGADO')
+    .reduce((total, cuota) => {
+      return total + Number(cuota.monto)
+    }, 0)
+})
+
+/* SALDO PENDIENTE */
+const saldoPendiente = computed(() => {
+  return cuotas.value
+    .filter((c) => c.estado === 'PENDIENTE')
+    .reduce((total, cuota) => {
+      return total + Number(cuota.monto)
+    }, 0)
+})
+
+onMounted(cargarCuotas)
 </script>
 
 <template>
+  <AlertaBase
+    :visible="alertaVisible"
+    :titulo="alertaTitulo"
+    :mensaje="alertaMensaje"
+    :tipo="alertaTipo"
+    @close="alertaVisible = false"
+  />
   <div class="container mt-4">
-
     <div class="d-flex justify-content-between mb-3">
       <h2>Lista de Cuotas</h2>
-
- 
     </div>
 
-    <div class="mb-3 d-flex gap-2">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Ingrese el valor de búsqueda"
-      />
+    <!-- INFORMACIÓN GENERAL -->
 
-      <button class="btn btn-success">
-        Buscar
-      </button>
+    <div v-if="cuotas.length" class="card mb-4">
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <strong>ID Venta:</strong>
 
-      <button class="btn btn-warning">
-        Limpiar
-      </button>
+            <br />
+
+            {{ cuotas[0]?.id_venta }}
+          </div>
+
+          <div class="col-md-3">
+            <strong>Cliente:</strong>
+
+            <br />
+
+            {{ cuotas[0]?.nombre_cliente }}
+          </div>
+
+          <div class="col-md-2">
+            <strong>Interés:</strong>
+
+            <br />
+
+            {{ ((cuotas[0]?.interes ?? 0) * 100).toFixed(0) }}%
+          </div>
+
+          <div class="col-md-2">
+            <strong>Total Pagado:</strong>
+
+            <br />
+
+            Q {{ formatearValor(totalPagado) }}
+          </div>
+
+          <div class="col-md-2">
+            <strong>Saldo Pendiente:</strong>
+
+            <br />
+
+            Q {{ formatearValor(saldoPendiente) }}
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- TABLA -->
 
     <table class="table table-bordered text-center">
-
       <thead class="table-dark">
         <tr>
           <th>ID Cuota</th>
-          <th>Fecha Pago</th>
+
+          <th>Fecha programada</th>
+
+          <th>Fecha pagado</th>
+
           <th>Monto</th>
-          <th>Interés</th>
+
           <th>Estado</th>
-          <th>ID Venta</th>
+
           <th>Acciones</th>
         </tr>
       </thead>
 
       <tbody>
-
-        <tr>
-          <td>1</td>
-          <td>2025-09-10</td>
-          <td>250.00</td>
-          <td>15.00</td>
+        <tr v-for="cuota in cuotas" :key="cuota.id_cuota">
           <td>
-            <span class="badge bg-success">
-              PAGADO
-            </span>
+            {{ cuota.id_cuota }}
           </td>
-          <td>12</td>
-          <td>
-             <button class="btn btn-secondary btn-sm me-2" disabled>
-              Pagado
-            </button>
 
-           
+          <td>
+            {{ formatearFecha(cuota.fecha_pago) }}
           </td>
-        </tr>
+          <td>
+            {{ cuota.fecha_pagado ? formatearFecha(cuota.fecha_pagado) : 'Aún no pagado' }}
+          </td>
 
-        <tr>
-          <td>2</td>
-          <td>2025-10-10</td>
-          <td>250.00</td>
-          <td>10.00</td>
+          <td>Q {{ formatearValor(cuota.monto) }}</td>
+
           <td>
-            <span class="badge bg-warning text-dark">
-              PENDIENTE
-            </span>
+            <span v-if="cuota.estado === 'PAGADO'" class="badge bg-success"> PAGADO </span>
+
+            <span v-else class="badge bg-warning text-dark"> PENDIENTE </span>
           </td>
-          <td>12</td>
+
           <td>
-             <button class="btn btn-success btn-sm me-2">
+            <button
+              v-if="cuota.estado === 'PENDIENTE'"
+              class="btn btn-success btn-sm"
+              @click="abrirModalPago(cuota.id_cuota)"
+            >
               Pagar
             </button>
 
-           
+            <button v-else class="btn btn-secondary btn-sm" disabled>Pagado</button>
           </td>
         </tr>
-
-        <tr>
-          <td>3</td>
-          <td>2025-11-10</td>
-          <td>250.00</td>
-          <td>8.00</td>
-          <td>
-            <span class="badge bg-warning text-dark">
-              PENDIENTE
-            </span>
-          </td>
-          <td>12</td>
-          <td>
-            <button class="btn btn-success btn-sm me-2">
-              Pagar
-            </button>
-
-          
-          </td>
-        </tr>
-
       </tbody>
-
     </table>
-
+    <ModalPagarCuota
+      :visible="modalVisible"
+      :idCuota="cuotaSeleccionada"
+      @close="cerrarModal"
+      @pagado="cargarCuotas"
+    />
   </div>
 </template>

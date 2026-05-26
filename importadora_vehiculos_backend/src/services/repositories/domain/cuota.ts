@@ -5,4 +5,5 @@ export interface Cuota {
     interes: number
     estado: 'PENDIENTE'|'PAGADO'
     id_venta: number
+    nombre_cliente?:string
 }

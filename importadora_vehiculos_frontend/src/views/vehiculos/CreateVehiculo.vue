@@ -3,6 +3,12 @@ import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
+import AlertaBase from '@/components/alertas/AlertaBase.vue'
+// ALERTA BASE
+const alertaVisible = ref(false)
+const alertaMensaje = ref('')
+const alertaTitulo = ref('')
+const alertaTipo = ref<'success' | 'error'>('success')
 
 const router = useRouter()
 
@@ -13,7 +19,7 @@ const anio = ref<number | null>(null)
 const color = ref('')
 const precio_venta = ref<number | null>(null)
 const id_marca = ref<number | null>(null)
-const id_estado = ref<number | null>(null)
+const id_estado = ref<number | null>(1)
 const id_modelo = ref<number | null>(null)
 
 // LISTAS
@@ -56,7 +62,7 @@ const guardar = async () => {
       placa: placa.value,
       anio: anio.value,
       color: color.value,
-      precio_venta: (precio_venta.value = null),
+      precio_venta: precio_venta.value,
       id_marca: id_marca.value,
       id_estado: 1,
       id_modelo: id_modelo.value,
@@ -64,7 +70,10 @@ const guardar = async () => {
 
     await api.post('/vehiculos', datosVehiculo)
 
-    alert('Vehículo creado correctamente')
+    alertaTitulo.value = 'Éxito'
+    alertaMensaje.value = 'Vehículo creado correctamente'
+    alertaTipo.value = 'success'
+    alertaVisible.value = true
 
     // limpiar formulario
     vin.value = ''
@@ -76,7 +85,10 @@ const guardar = async () => {
     id_modelo.value = null
     id_estado.value = null
   } catch (error: any) {
-    alert(error.response?.data?.message || 'Error al crear vehículo')
+    alertaTitulo.value = 'Error'
+    alertaMensaje.value = error.response?.data?.message || 'Error al crear vehículo'
+    alertaTipo.value = 'error'
+    alertaVisible.value = true
   }
 }
 
@@ -88,6 +100,13 @@ onMounted(async () => {
 
 <template>
   <div class="page">
+    <AlertaBase
+      :visible="alertaVisible"
+      :titulo="alertaTitulo"
+      :mensaje="alertaMensaje"
+      :tipo="alertaTipo"
+      @close="alertaVisible = false"
+    />
     <!-- FORMULARIO -->
     <div class="form-container">
       <br />
@@ -142,12 +161,7 @@ onMounted(async () => {
       <!-- Estado -->
       <div class="campo">
         <label>Estado</label>
-        <select v-model="id_estado">
-          <option disabled value="">Seleccione un estado</option>
-          <option v-for="e in estados" :key="e.id_estado" :value="e.id_estado">
-            {{ e.nombre }}
-          </option>
-        </select>
+        <input type="text" placeholder="REPARACION" disabled />
       </div>
 
       <!-- BOTÓN -->

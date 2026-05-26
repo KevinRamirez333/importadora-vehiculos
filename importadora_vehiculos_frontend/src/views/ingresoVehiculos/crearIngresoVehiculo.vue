@@ -10,7 +10,7 @@ const vin = ref('')
 const tipo_ingreso = ref('')
 const fecha = ref('')
 const buscarCliente = ref('')
-const id_cliente = ref<number|null>(null)
+const id_cliente = ref<number | null>(null)
 const nombreCliente = ref('')
 const valor_ingreso = ref<number | null>(null)
 
@@ -36,21 +36,17 @@ const buscarPorId = async () => {
   }
 }
 const buscarClienteDPI = async () => {
-
-  try{
-const res = await api.get(`/clientes/dpi/${buscarCliente.value}`)
-  const cliente = res.data
-  nombreCliente.value = cliente.nombre
-  id_cliente.value=cliente.id_cliente
-  alert('Cliente encontrado correctamente')
-  }catch(error:any){
+  try {
+    const res = await api.get(`/clientes/dpi/${buscarCliente.value}`)
+    const cliente = res.data
+    nombreCliente.value = cliente.nombre
+    id_cliente.value = cliente.id_cliente
+    alert('Cliente encontrado correctamente')
+  } catch (error: any) {
     alert(error.response?.data?.message)
     nombreCliente.value = ''
-    id_cliente.value =null
+    id_cliente.value = null
   }
-
-
-
 }
 
 // crear
@@ -89,7 +85,6 @@ const formato = computed(() => {
 
 onMounted(async () => {
   await cargarVehiculos()
-
 })
 </script>
 
@@ -121,7 +116,6 @@ onMounted(async () => {
         <select v-model="tipo_ingreso" class="form-select">
           <option value="IMPORTACION">IMPORTACION</option>
           <option value="COMPRA_LOCAL">COMPRA LOCAL</option>
-          <option value="RECIBIDO_COMO_PAGO">RECIBIDO COMO PAGO</option>
         </select>
       </div>
 
@@ -129,7 +123,7 @@ onMounted(async () => {
         <label>Fecha</label>
         <input type="date" v-model="fecha" class="form-control" />
       </div>
-
+      <!--
       <div class="mb-3" v-if="tipo_ingreso == 'RECIBIDO_COMO_PAGO'">
         <label>Cliente</label>
         <div class="mb-3 d-flex gap-2">
@@ -143,7 +137,7 @@ onMounted(async () => {
           <button class="btn btn-success" @click="buscarClienteDPI()">Buscar</button>
         </div>
       </div>
-
+-->
       <div class="mb-3" v-if="tipo_ingreso !== 'IMPORTACION'">
         <label>Valor de ingreso</label>
         <input type="number" v-model="valor_ingreso" class="form-control" />

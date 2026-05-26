@@ -12,4 +12,8 @@ export interface Venta {
     nombre?:string
     apellido?:string
     nit:number
+    marca?:string
+    modelo?:string
+    vehiculo_anio?:number
+    placa?:string
 }

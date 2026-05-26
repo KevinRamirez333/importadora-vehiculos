@@ -1,47 +1,59 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-
+import { ref, onMounted,type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
 import { formatearFecha } from '@/helpers/formatearFecha'
+import AlertaBase from '@/components/alertas/AlertaBase.vue'
+import ConfirmacionBase from '@/components/alertas/ConfirmacionBase.vue'
 
 const router = useRouter()
 const ingresos = ref<any[]>([])
 const ingresosCopia = ref<any[]>([])
 const textoBusqueda = ref('')
-
 const id = ref('')
+
+const alertaVisible = ref(false)
+const alertaMensaje = ref('')
+const alertaTitulo = ref('')
+const alertaTipo = ref<'success' | 'error'>('error')
+
+
 //Busqueda de ingreso de vehiculo por id
 const BuscarPorId = async () => {
   try {
     const res = await api.get(`/ingresos/${id.value}`)
     ingresos.value = [res.data]
   } catch (error: any) {
+    alertaTitulo.value = 'Error'
     if (error.response) {
-      alert('No existe una ingreso con ese ID')
+      alertaMensaje.value = 'No existe una ingreso con ese ID'
     } else {
-      alert('Ocurrió un error al buscar')
+      alertaMensaje.value = 'Ocurrió un error al buscar'
     }
+    alertaTipo.value = 'error'
+    alertaVisible.value = true
   }
 }
 
 //Cargar ingresos de vehiculos
 const cargar = async () => {
-  try{
-const res = await api.get('/ingresos')
-  ingresos.value = res.data
-  ingresosCopia.value = res.data
-  console.log(ingresos.value)
-  } catch(error){
-    alert('Error al cargar ingreso de vehículos')
+  try {
+    const res = await api.get('/ingresos')
+    ingresos.value = res.data
+    ingresosCopia.value = res.data
+    console.log(ingresos.value)
+  } catch (error) {
+    alertaTitulo.value = 'Error'
+    alertaMensaje.value = 'Error al cargar ingreso de vehículos'
+    alertaTipo.value = 'error'
+    alertaVisible.value = true
   }
-  
 }
+
 const filtrar = async () => {
   const texto = textoBusqueda.value.toLowerCase().trim()
   ingresos.value = ingresosCopia.value.filter((i: any) => {
     const cliente = i.id_cliente?.toLowerCase() || ''
-
     return (
       i.id_ingreso.toString().includes(texto) ||
       i.vin.toLowerCase().includes(texto) ||
@@ -53,31 +65,62 @@ const filtrar = async () => {
     )
   })
 }
+
 //Acceder a vista editar ingresos
 const editar = (id: number) => {
   router.push({ name: 'editar-ingreso-vehiculo', params: { id } })
 }
 
-const anular = async (id: number) => {
-  if (!confirm('¿Seguro que deseas anular este ingreso?')) return
+const confirmacionVisible = ref(false)
+const confirmacionMensaje = ref('')
+const confirmacionTitulo = ref('')
+let confirmacionAccion: (() => Promise<void>) | null = null as (() => Promise<void>) | null
 
-  try {
-    await api.post(`/ingresos/anular/${id}`)
-    cargar()
-  } catch {
-    alert('Error al anular')
-  }
+const mostrarConfirmacion = (mensaje: string, titulo: string, accion: () => Promise<void>) => {
+  confirmacionMensaje.value = mensaje
+  confirmacionTitulo.value = titulo
+  confirmacionAccion = accion
+  confirmacionVisible.value = true
 }
-const activar = async (id: number) => {
-  if (!confirm('¿Reactivar ingreso?')) return
-  try {
-    await api.post(`/ingresos/activar/${id}`)
-    cargar()
-  } catch {
-    alert('Error al activar')
-  }
+const anular = (id: number) => {
+  mostrarConfirmacion(
+    '¿Seguro que deseas anular este ingreso?',
+    'Confirmar anulación',
+    async () => {
+      try {
+        await api.post(`/ingresos/anular/${id}`)
+        alertaTitulo.value = 'Éxito'
+        alertaMensaje.value = 'Ingreso anulado correctamente'
+        alertaTipo.value = 'success'
+        alertaVisible.value = true
+        cargar()
+      } catch {
+        alertaTitulo.value = 'Error'
+        alertaMensaje.value = 'Error al anular'
+        alertaTipo.value = 'error'
+        alertaVisible.value = true
+      }
+    },
+  )
 }
 
+const activar = (id: number) => {
+  mostrarConfirmacion('¿Reactivar ingreso?', 'Confirmar activación', async () => {
+    try {
+      await api.post(`/ingresos/activar/${id}`)
+      alertaTitulo.value = 'Éxito'
+      alertaMensaje.value = 'Ingreso activado correctamente'
+      alertaTipo.value = 'success'
+      alertaVisible.value = true
+      cargar()
+    } catch {
+      alertaTitulo.value = 'Error'
+      alertaMensaje.value = 'Error al activar'
+      alertaTipo.value = 'error'
+      alertaVisible.value = true
+    }
+  })
+}
 
 const limpiar = async () => {
   textoBusqueda.value = ''
@@ -88,6 +131,25 @@ onMounted(cargar)
 </script>
 
 <template>
+  <AlertaBase
+    :visible="alertaVisible"
+    :titulo="alertaTitulo"
+    :mensaje="alertaMensaje"
+    :tipo="alertaTipo"
+    @close="alertaVisible = false"
+  />
+<ConfirmacionBase
+    :visible="confirmacionVisible"
+    :titulo="confirmacionTitulo"
+    :mensaje="confirmacionMensaje"
+    @cancel="confirmacionVisible = false"
+    @confirm="
+      async () => {
+        confirmacionVisible = false
+        if (confirmacionAccion) await confirmacionAccion()
+      }
+    "
+  />
   <div class="container mt-4">
     <div class="d-flex justify-content-between mb-3">
       <h2>Ingreso de Vehículos</h2>

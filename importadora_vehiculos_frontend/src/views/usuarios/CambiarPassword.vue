@@ -2,9 +2,8 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
-import {jwtDecode} from "jwt-decode"
+import { jwtDecode } from 'jwt-decode'
 import api from '@/services/api'
-
 
 const router = useRouter()
 
@@ -13,7 +12,7 @@ const nuevaPassword = ref('')
 const confirmarPassword = ref('')
 
 //Obtener el ID del usuario desde el token para usarlo en la ruta de cambio de contraseña
-const token = localStorage.getItem("token")
+const token = localStorage.getItem('token')
 
 let userId = null
 
@@ -54,8 +53,7 @@ const cambiarPassword = async () => {
 
 <template>
   <div class="page">
-
-    <br>
+    <br />
     <div class="form-container">
       <h2>Cambiar contraseña</h2>
 
@@ -66,7 +64,7 @@ const cambiarPassword = async () => {
       <input type="password" v-model="confirmarPassword" placeholder="Confirmar nueva contraseña" />
 
       <button class="btn btn-success" @click="cambiarPassword">Cambiar contraseña</button>
-      <button class="btn btn-secondary" @click="router.push({name:'inicio'})">Volver</button>
+      <button class="btn btn-secondary" @click="router.push({ name: 'inicio' })">Volver</button>
     </div>
   </div>
 </template>
@@ -83,8 +81,6 @@ const cambiarPassword = async () => {
   background: #2c3e50;
 }
 
-
-
 .form-container {
   display: flex;
   flex-direction: column;
@@ -99,8 +95,4 @@ input {
   border: 1px solid #dcdcdc;
   font-size: 15px;
 }
-
-
-
-
 </style>

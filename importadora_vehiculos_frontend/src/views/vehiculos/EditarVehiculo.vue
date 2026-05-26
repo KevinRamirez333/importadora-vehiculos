@@ -65,7 +65,7 @@ const cargarVehiculo = async () => {
   //carga modelos
   await cargarModelos()
 
-  //ahora sí modelo
+
   id_modelo.value = data.id_modelo
 
   id_estado.value = data.id_estado
@@ -152,8 +152,8 @@ onMounted(async () => {
       <!-- Estado -->
       <div class="campo">
         <label>Estado</label>
-        <select v-model="id_estado">
-          <option v-for="e in estados" :key="e.id_estado" :value="e.id_estado">
+        <select v-model="id_estado" disabled>
+          <option v-for="e in estados" :key="e.id_estado" :value="e.id_estado" >
             {{ e.nombre }}
           </option>
         </select>

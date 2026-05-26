@@ -39,4 +39,35 @@ export class CuotaService {
             message: 'Cuotas creadas correctamente'
         } 
     }
+    async listarCuotasPorVenta(idVenta:number){
+        if(!idVenta){
+            throw new Error('ID de venta es requerido')
+        }
+        const result = await this.cuotaRepo.listarCuotasPorVenta(idVenta)
+        return result
+    }
+    async buscarCuotaPorId(idCuota:number){
+        if(!idCuota){
+            throw new Error('ID de cuota es requerido')
+        }
+        
+        const result = await this.cuotaRepo.buscarCuotaPorId(idCuota)
+        return result
+    }
+    async pagarCuota(idCuota: number, fechaPagado:string){
+        if(!idCuota || !fechaPagado){
+            throw new Error('ID de cuota y fecha de pago son requeridos')
+        }
+        const cuota = await this.cuotaRepo.buscarCuotaPorId(idCuota)
+        if(!cuota){
+            throw new Error('Cuota no encontrada')
+        }
+        if(cuota.estado==='PAGADO'){
+            throw new Error('La cuota ya ha sido pagada')
+        }
+        await this.cuotaRepo.pagarCuota(idCuota, fechaPagado)
+        return {
+            message: 'Cuota pagada correctamente'
+        }
+    }
 }

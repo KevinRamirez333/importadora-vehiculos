@@ -2,6 +2,7 @@
 import api from '@/services/api'
 import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
+import { formatearValor } from '@/helpers/formatearValor'
 
 const router = useRouter()
 const importaciones = ref<any[]>([])
@@ -93,9 +94,9 @@ onMounted(cargar)
           <th>ID</th>
           <th>VIN</th>
           <th>País</th>
-          <th>Costo</th>
+          <th>Precio en dolares</th>
           <th>Tasa cambio</th>
-
+          <th>Precio en quetzales</th>
           <th>Estado</th>
           <th>Acciones</th>
         </tr>
@@ -105,8 +106,9 @@ onMounted(cargar)
           <td>{{ i.id_importacion }}</td>
           <td>{{ i.vin }}</td>
           <td>{{ i.pais_origen }}</td>
-          <td>{{ i.costo_dolares }}</td>
+          <td>{{ formatearValor(i.costo_dolares) }}</td>
           <td>{{ i.tipo_cambio }}</td>
+          <td>{{ formatearValor(i.costo_dolares*i.tipo_cambio) }}</td>
           <td>
             <span class="badge" :class="i.estado === 'ACTIVO' ? 'bg-success' : 'bg-danger'">
               {{ i.estado }}

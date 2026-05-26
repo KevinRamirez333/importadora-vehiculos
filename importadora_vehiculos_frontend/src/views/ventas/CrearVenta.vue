@@ -3,7 +3,7 @@ import { redondearDecimales } from '@/helpers/redondearDecimales'
 import api from '@/services/api'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-
+import AlertaBase from '@/components/alertas/AlertaBase.vue'
 
 const router = useRouter()
 const fecha = ref('')
@@ -13,6 +13,10 @@ const tipo_pago = ref('')
 const cuotas = ref(0)
 const precio_venta_mostrar = ref(0)
 
+const alertaVisible = ref(false)
+const alertaMensaje = ref('')
+const alertaTitulo = ref('')
+const alertaTipo = ref<'success' | 'error'>('success')
 
 const estado = computed(() => {
   return tipo_pago.value === 'CONTADO' ? 'PAGADO' : 'PENDIENTE'
@@ -31,7 +35,7 @@ const precioFinanciado = computed(() => {
 })
 const enganche = computed(() => {
   if (tipo_pago.value != 'CREDITO') return 0
-  return redondearDecimales(precioFinanciado.value * porcentajeEnganche )
+  return redondearDecimales(precioFinanciado.value * porcentajeEnganche)
 })
 
 const saldoFinanciar = computed(() => {
@@ -50,11 +54,12 @@ const crear = async () => {
       id_cliente: id_cliente.value,
       tipo_pago: tipo_pago.value,
       cuotas: cuotas.value,
-      estado: estado.value
+      estado: estado.value,
     })
-
-    alert('Venta guardada correctamente')
-
+    alertaTitulo.value = 'Éxito'
+    alertaMensaje.value = 'Venta guardada correctamente'
+    alertaTipo.value = 'success'
+    alertaVisible.value = true
     fecha.value = ''
     vin.value = ''
     nombreVehiculo.value = ''
@@ -68,7 +73,10 @@ const crear = async () => {
     cuotas.value = 0
     precio_venta_mostrar.value = 0
   } catch (error: any) {
-    alert(error.response?.data?.message || 'Error al guardar la venta')
+    alertaTitulo.value = 'Error'
+    alertaMensaje.value = error.response?.data?.message || 'Error al guardar la venta'
+    alertaTipo.value = 'error'
+    alertaVisible.value = true
   }
 }
 
@@ -174,11 +182,11 @@ const buscarCliente = async () => {
         </div>
         <div class="mt-3">
           <label>Saldo a financiar</label>
-          <input type="number" class="form-control" :value ="saldoFinanciar" disabled/>
+          <input type="number" class="form-control" :value="saldoFinanciar" disabled />
         </div>
       </div>
-    
-      <div class="mb-3" v-if="tipo_pago=='CONTADO'">
+
+      <div class="mb-3" v-if="tipo_pago == 'CONTADO'">
         <label>Precio Venta</label>
         <input type="number" class="form-control" v-model="precio_venta_mostrar" disabled />
       </div>

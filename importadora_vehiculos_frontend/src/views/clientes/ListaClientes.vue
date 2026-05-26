@@ -2,6 +2,8 @@
 import api from '@/services/api'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import AlertaBase from '@/components/alertas/AlertaBase.vue'
+import ConfirmacionBase from '@/components/alertas/ConfirmacionBase.vue'
 
 const router = useRouter()
 
@@ -11,20 +13,26 @@ const idBusqueda = ref('')
 const textoBusqueda = ref('')
 const clientesCopia = ref<any[]>([])
 
-const cargarClientes = async () => {
-  try{
-  const res = await api.get('/clientes')
-  clientes.value = res.data
-  clientesCopia.value = res.data
-  } catch(error){
-    alert('Error al cargar clientes')
-  }
+const alertaVisible = ref(false)
+const alertaMensaje = ref('')
+const alertaTitulo = ref('')
+const alertaTipo = ref<'success' | 'error'>('success')
 
+const cargarClientes = async () => {
+  try {
+    const res = await api.get('/clientes')
+    clientes.value = res.data
+    clientesCopia.value = res.data
+  } catch (error) {
+    alertaTitulo.value = 'Error'
+    alertaMensaje.value = 'Error al cargar clientes'
+    alertaTipo.value = 'error'
+    alertaVisible.value = true
+  }
 }
 
 const filtrar = () => {
   const texto = textoBusqueda.value.toLowerCase().trim()
-
   clientes.value = clientesCopia.value.filter((c: any) => {
     const estado = c.estado ? 'activo' : 'inactivo'
     return (
@@ -54,40 +62,92 @@ const buscar = async () => {
       clientes.value = [res.data]
     }
   } catch (error: any) {
-    alert(error.response?.data?.message || 'Error al buscar el cliente')
-  }
-}
-const desactivar = async (id: number) => {
-  try {
-    if (!confirm('¿Desea desactivar este cliente?')) return
-    await api.post(`/clientes/desactivar/${id}`)
-    cargarClientes()
-  } catch (error: any) {
-    alert(error.response?.data?.message || 'Error al desactivar el cliente')
+    alertaTitulo.value = 'Error'
+    alertaMensaje.value = error.response?.data?.message || 'Error al buscar el cliente'
+    alertaTipo.value = 'error'
+    alertaVisible.value = true
   }
 }
 
-const activar = async (id: number) => {
-  try {
-    if (!confirm('¿Desea activar este cliente?')) return
-    await api.post(`/clientes/activar/${id}`)
-    cargarClientes()
-  } catch (error: any) {
-    alert(error.response?.data?.message || 'Error al activar el cliente')
-  }
+const confirmacionVisible = ref(false)
+const confirmacionMensaje = ref('')
+const confirmacionTitulo = ref('')
+let confirmacionAccion: (() => Promise<void>) | null = null as (() => Promise<void>) | null
+
+const mostrarConfirmacion = (mensaje: string, titulo: string, accion: () => Promise<void>) => {
+  confirmacionMensaje.value = mensaje
+  confirmacionTitulo.value = titulo
+  confirmacionAccion = accion
+  confirmacionVisible.value = true
 }
+
+const desactivar = (id: number) => {
+  mostrarConfirmacion('¿Desea desactivar este cliente?', 'Confirmar desactivación', async () => {
+    try {
+      await api.post(`/clientes/desactivar/${id}`)
+      alertaTitulo.value = 'Éxito'
+      alertaMensaje.value = 'Cliente desactivado correctamente'
+      alertaTipo.value = 'success'
+      alertaVisible.value = true
+      cargarClientes()
+    } catch (error: any) {
+      alertaTitulo.value = 'Error'
+      alertaMensaje.value = error.response?.data?.message || 'Error al desactivar el cliente'
+      alertaTipo.value = 'error'
+      alertaVisible.value = true
+    }
+  })
+}
+
+const activar = (id: number) => {
+  mostrarConfirmacion('¿Desea activar este cliente?', 'Confirmar activación', async () => {
+    try {
+      await api.post(`/clientes/activar/${id}`)
+      alertaTitulo.value = 'Éxito'
+      alertaMensaje.value = 'Cliente activado correctamente'
+      alertaTipo.value = 'success'
+      alertaVisible.value = true
+      cargarClientes()
+    } catch (error: any) {
+      alertaTitulo.value = 'Error'
+      alertaMensaje.value = error.response?.data?.message || 'Error al activar el cliente'
+      alertaTipo.value = 'error'
+      alertaVisible.value = true
+    }
+  })
+}
+
 const limpiar = () => {
   textoBusqueda.value = ''
   cargarClientes()
 }
 
-const verCompras= (id_cliente:number)=>{
-  router.push({name: 'compras-cliente', params:{id:id_cliente}})
+const verCompras = (id_cliente: number) => {
+  router.push({ name: 'compras-cliente', params: { id: id_cliente } })
 }
 onMounted(cargarClientes)
 </script>
 
 <template>
+  <AlertaBase
+    :visible="alertaVisible"
+    :titulo="alertaTitulo"
+    :mensaje="alertaMensaje"
+    :tipo="alertaTipo"
+    @close="alertaVisible = false"
+  />
+  <ConfirmacionBase
+    :visible="confirmacionVisible"
+    :titulo="confirmacionTitulo"
+    :mensaje="confirmacionMensaje"
+    @cancel="confirmacionVisible = false"
+    @confirm="
+      async () => {
+        confirmacionVisible = false
+        if (confirmacionAccion) await confirmacionAccion?.()
+      }
+    "
+  />
   <div class="container mt-4">
     <div class="d-flex justify-content-between mb-3">
       <h2>Lista de Clientes</h2>
@@ -139,13 +199,19 @@ onMounted(cargarClientes)
               Editar
             </button>
 
-            <button v-if="c.estado" class="btn btn-danger btn-sm me-2" @click="desactivar(c.id_cliente)">
+            <button
+              v-if="c.estado"
+              class="btn btn-danger btn-sm me-2"
+              @click="desactivar(c.id_cliente)"
+            >
               Desactivar
             </button>
-            <button v-else class="btn btn-success btn-sm" @click="activar(c.id_cliente)">
+            <button v-else class="btn btn-success btn-sm me-2" @click="activar(c.id_cliente)">
               Activar
             </button>
-            <button class="btn btn-secondary btn-sm" @click="verCompras(c.id_cliente)">Ver compras</button>
+            <button class="btn btn-secondary btn-sm " @click="verCompras(c.id_cliente)">
+              Ver compras
+            </button>
           </td>
         </tr>
       </tbody>

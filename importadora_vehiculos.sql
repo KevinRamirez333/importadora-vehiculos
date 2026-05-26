@@ -130,6 +130,7 @@ constraint fk_cliente_venta foreign key(id_cliente) references cliente(id_client
 create table venta_cuota (
   id_cuota int auto_increment,
   fecha_pago date,
+  fecha_pagado date,
   monto decimal(12,2),
   interes decimal(12,2),
   estado enum('PENDIENTE','PAGADO') default 'PENDIENTE',
@@ -138,19 +139,7 @@ create table venta_cuota (
   constraint fk_id_venta foreign key(id_venta) references venta(id_venta) 
 );
 
-select * from venta;
-select * from venta_cuota;
-select * from estado;
 
 
-select vc.*, v.id_venta
-from venta_cuota vc 
-inner join venta v
-on vc.id_venta = v.id_venta 
-
-inner join cliente c
-on c.id_cliente = v.id_cliente
-
-where c.dpi = 3209506460502;
 
 

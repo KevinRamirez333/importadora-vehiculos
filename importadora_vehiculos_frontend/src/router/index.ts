@@ -25,13 +25,14 @@ import EditarVehiculoCosto from '@/views/costoVehiculos/EditarVehiculoCosto.vue'
 import DefinirPrecioVenta from '@/views/vehiculos/DefinirPrecioVenta.vue'
 import ListaClientes from '@/views/clientes/ListaClientes.vue'
 import CrearCliente from '@/views/clientes/CrearCliente.vue'
-import DashboardLayout from '@/views/dashboard/DashboardLayout.vue'
+
 import Inicio from '@/views/dashboard/Inicio.vue'
 import EditarCliente from '@/views/clientes/EditarCliente.vue'
 import CrearVenta from '@/views/ventas/CrearVenta.vue'
 import ComprasCliente from '@/views/ventas/ComprasCliente.vue'
 import ListaVentas from '@/views/ventas/ListaVentas.vue'
 import ListaCuota from '@/views/cuotas/ListaCuota.vue'
+import Panel from '@/views/panel/Panel.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,9 +43,9 @@ const router = createRouter({
       component: Login,
     },
     {
-      path: '/dashboard',
+      path: '/panel',
       name: 'dashboard',
-      component: DashboardLayout,
+      component: Panel,
       children: [
         {
           path: '',
@@ -192,7 +193,7 @@ const router = createRouter({
           component: ComprasCliente
         },
         {
-          path:'cuotas',
+          path:'cuotas/:idVenta',
           name:'cuotas',
           component: ListaCuota
         },

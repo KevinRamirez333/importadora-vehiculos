@@ -33,10 +33,35 @@ export class VentaRepositoryMySQL implements VentaRepository {
         return rows
     }
     async findById(id: number): Promise<Venta | null> {
-        const query=`select v.*, c.nombre, c.apellido, c.nit
-         from venta v
-         inner join cliente c on v.id_cliente=c.id_cliente 
-         where v.id_venta=?`
+        const query=`
+        SELECT
+    v.*,
+
+    c.nombre,
+    c.apellido,
+    c.nit,
+
+    veh.anio AS vehiculo_anio,
+    veh.placa,
+
+    ma.nombre AS marca,
+    mo.nombre AS modelo
+
+FROM venta v
+
+INNER JOIN vehiculo veh
+    ON v.vin = veh.vin
+
+INNER JOIN cliente c
+    ON v.id_cliente = c.id_cliente
+
+INNER JOIN marca ma
+    ON veh.id_marca = ma.id_marca
+
+INNER JOIN modelo mo
+    ON veh.id_modelo = mo.id_modelo
+
+WHERE v.id_venta = ?`
 
         const [rows]:any = await connector.query(query,[id])
         return rows.length ? rows[0]:null

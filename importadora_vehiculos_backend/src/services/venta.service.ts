@@ -251,89 +251,130 @@ async generarComprobante(idVenta: number) {
     // Restaurar color
     doc.fillColor('#000')
 
-    // ===== INFORMACION VEHICULO =====
+ // ===== INFORMACION VEHICULO =====
 
-    doc
-        .fontSize(16)
-        .font('Helvetica-Bold')
-        .text('Información de la venta', 50, 310)
+doc
+    .fontSize(16)
+    .font('Helvetica-Bold')
+    .text('Información del vehículo', 50, 310)
 
-    doc
-        .strokeColor('#D6DCE5')
-        .lineWidth(1)
-        .moveTo(50, 335)
-        .lineTo(550, 335)
-        .stroke()
+doc
+    .strokeColor('#D6DCE5')
+    .lineWidth(1)
+    .moveTo(50, 335)
+    .lineTo(550, 335)
+    .stroke()
 
-    doc.fontSize(12)
+doc.fontSize(12)
 
-    doc
-        .font('Helvetica-Bold')
-        .text('VIN del vehículo:', 50, 355)
+const descripcionVehiculo = [
+    venta.marca,
+    venta.modelo,
+    venta.vehiculo_anio
 
-    doc
-        .font('Helvetica')
-        .text(venta.vin, 170, 355)
+]
+    .filter(Boolean)
+    .join(' ')
 
-    doc
-        .font('Helvetica-Bold')
-        .text('Tipo de pago:', 50, 380)
+// Línea 1
+doc
+    .font('Helvetica-Bold')
+    .text('Vehículo:', 50, 355)
 
-    doc
-        .font('Helvetica')
-        .text(venta.tipo_pago, 170, 380)
+doc
+    .font('Helvetica')
+    .text(
+        descripcionVehiculo || 'No disponible',
+        150,
+        355
+    )
 
-    doc
-        .font('Helvetica-Bold')
-        .text('Cuotas:', 320, 380)
+// Línea 2
+doc
+    .font('Helvetica-Bold')
+    .text('VIN:', 50, 385)
 
-    doc
-        .font('Helvetica')
-        .text(String(venta.cuotas || 'No aplica'), 390, 380)
+doc
+    .font('Helvetica')
+    .text(venta.vin || 'No disponible', 150, 385)
 
+doc
+    .font('Helvetica-Bold')
+    .text('Placa:', 320, 385)
+
+doc
+    .font('Helvetica')
+    .text(
+        venta.placa || 'No disponible',
+        390,
+        385
+    )
+
+// Línea 3
+doc
+    .font('Helvetica-Bold')
+    .text('Tipo de pago:', 50, 415)
+
+doc
+    .font('Helvetica')
+    .text(venta.tipo_pago, 150, 415)
+
+// Línea 4
+doc
+    .font('Helvetica-Bold')
+    .text('Cuotas:', 320, 415)
+
+doc
+    .font('Helvetica')
+    .text(
+        venta.cuotas
+            ? String(venta.cuotas)
+            : 'No aplica',
+        390,
+        415
+    )
     // ===== CAJA FINANCIERA =====
 
-    doc
-        .roundedRect(50, 430, 500, 120, 10)
-        .fillAndStroke('#F5F7FA', '#D6DCE5')
+doc
+    .roundedRect(50, 470, 500, 120, 10)
+    .fillAndStroke('#F5F7FA', '#D6DCE5')
 
-    doc.fillColor('#000')
+doc.fillColor('#000')
 
-    doc
-        .fontSize(15)
-        .font('Helvetica-Bold')
-        .text('Resumen financiero', 70, 445)
+doc
+    .fontSize(15)
+    .font('Helvetica-Bold')
+    .text('Resumen financiero', 70, 490)
 
-    doc.fontSize(12)
+doc.fontSize(12)
 
-    doc
-        .font('Helvetica')
-        .text(
-            `Precio de venta: Q${formatearMoneda(venta.precio_venta || 0)}`,
-            70,
-            475
-        )
-
-    doc.text(
-        `Enganche: ${
-            venta.enganche
-                ? `Q${formatearMoneda(venta.enganche)}`
-                : 'No aplica'
-        }`,
+doc
+    .font('Helvetica')
+    .text(
+        `Precio de venta: Q${formatearMoneda(venta.precio_venta || 0)}`,
         70,
-        500
+        520
     )
 
-    doc.text(
-        `Saldo financiado: ${
-            venta.saldo_financiado
-                ? `Q${formatearMoneda(venta.saldo_financiado)}`
-                : 'No aplica'
-        }`,
-        70,
-        525
-    )
+doc.text(
+    `Enganche: ${
+        venta.enganche
+            ? `Q${formatearMoneda(venta.enganche)}`
+            : 'No aplica'
+    }`,
+    70,
+    545
+)
 
+doc.text(
+    `Saldo financiado: ${
+        venta.saldo_financiado
+            ? `Q${formatearMoneda(venta.saldo_financiado)}`
+            : 'No aplica'
+    }`,
+    70,
+    570
+)
     // ===== FOOTER =====
 
     doc

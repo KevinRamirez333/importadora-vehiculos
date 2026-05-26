@@ -94,8 +94,6 @@ onMounted(cargarUsuarios)
 
 <template>
   <div class="page">
-    <br />
-
     <h2 class="titulo">Usuarios del Sistema</h2>
     <button class="btn-crear" @click="router.push({ name: 'crear-usuario' })">Crear Usuario</button>
     <div class="mb-3 d-flex gap-2">

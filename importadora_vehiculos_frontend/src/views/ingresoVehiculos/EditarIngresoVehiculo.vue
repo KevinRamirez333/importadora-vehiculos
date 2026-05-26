@@ -26,7 +26,6 @@ const formato = computed(() => {
 
 const cargar = async () => {
   const res = await api.get(`/ingresos/${id}`)
-  console.log(res.data)
 
   const data = res.data
 
@@ -43,6 +42,9 @@ const actualizar = async () => {
     id_cliente: id_cliente.value,
     valor_ingreso: valor_ingreso.value,
   })
+  if (tipo_ingreso.value === 'IMPORTACION') {
+    router.push({ name: 'crear-importacion', params: { id: id } })
+  }
   ;((tipo_ingreso.value = ''),
     (fecha.value = ''),
     (id_cliente.value = null),
@@ -80,11 +82,10 @@ onMounted(async () => {
 
     <div class="card p-4">
       <div class="mb-3">
-        <label>Tipo</label>
+        <label>Tipo de ingreso</label>
         <select v-model="tipo_ingreso" class="form-select">
           <option value="IMPORTACION">IMPORTACION</option>
           <option value="COMPRA_LOCAL">COMPRA LOCAL</option>
-          <option value="RECIBIDO_COMO_PAGO">RECIBIDO COMO PAGO</option>
         </select>
       </div>
 
@@ -92,14 +93,14 @@ onMounted(async () => {
         <label>Fecha</label>
         <input type="date" v-model="fecha" class="form-control" />
       </div>
-      <div class="mb-3">
+      <!--<div class="mb-3">
         <label>Cliente</label>
       </div>
       <div class="mb-3 d-flex gap-2">
         <input type="text" v-model="cliente" disabled placeholder="Cliente seleccionado" />
         <input type="text" v-model="buscarCliente" placeholder="Busqueda por DPI" />
         <button class="btn btn-success" @click="buscarClienteDPI">Buscar</button>
-      </div>
+      </div>-->
       <div class="mb-3" v-if="tipo_ingreso !== 'IMPORTACION'">
         <label>Valor de ingreso</label>
         <input type="number" v-model="valor_ingreso" class="form-control" />
