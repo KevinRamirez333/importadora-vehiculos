@@ -14,8 +14,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 loadContainer(app); 
+
+// Detectamos si el código se está ejecutando desde la carpeta 'dist'
+const isCompiled = __dirname.includes('dist');
+const extension = isCompiled ? 'js' : 'ts';
+
 app.use(loadControllers(
-    'controllers/*.ts',
+    `controllers/*.${extension}`,
     {cwd: __dirname}
 ));
 export{app}
