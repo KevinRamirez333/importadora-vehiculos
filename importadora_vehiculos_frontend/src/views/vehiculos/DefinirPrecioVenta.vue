@@ -1,16 +1,25 @@
 <script setup lang="ts">
+import { formatearValor } from '@/helpers/formatearValor'
 import api from '@/services/api'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import AlertaBase from '@/components/alertas/AlertaBase.vue'
 
 const route = useRoute()
 const router = useRouter()
 const vin = route.params.vin
 
+// ALERTA BASE
+const alertaVisible = ref(false)
+const alertaMensaje = ref('')
+const alertaTitulo = ref('')
+const alertaTipo = ref<'success' | 'error'>('success')
+
 const ingreso = ref('')
 const costos = ref('')
 const total = ref('')
 const precioVenta = ref(0)
+let precioVentaMostrar: number = 0
 const porcentaje = ref(0)
 const cargar = async () => {
   try {
@@ -25,6 +34,7 @@ const cargar = async () => {
 }
 const calcular = () => {
   precioVenta.value = Number(total.value) + Number(total.value) * (porcentaje.value / 100)
+  precioVentaMostrar = precioVenta.value
 }
 
 const guardar = async () => {
@@ -33,10 +43,25 @@ const guardar = async () => {
       precio: precioVenta.value,
       porcentaje: porcentaje.value,
     })
-    alert('Precio de venta agregado correctamente')
-    router.push({name:'vehiculos'})
+    alertaTitulo.value = 'Éxito'
+    alertaMensaje.value = 'Precio de venta actualizado correctamente'
+    alertaTipo.value = 'success'
+    alertaVisible.value = true
   } catch (error: any) {
-    alert(error.response?.data?.message)
+    alertaTitulo.value = 'Error'
+    alertaMensaje.value = error.response?.data?.message || 'Ocurrió un error inesperado'
+    alertaTipo.value = 'error'
+    alertaVisible.value = true
+  }
+}
+
+// manejar el evento @close de la alerta
+const manejarCierreAlerta = () => {
+  alertaVisible.value = false
+
+  // Solo redirigimos si la alerta fue de éxito
+  if (alertaTipo.value === 'success') {
+    router.push({ name: 'vehiculos' })
   }
 }
 
@@ -51,6 +76,13 @@ onMounted(cargar)
 
 <template>
   <div class="container mt-4">
+    <AlertaBase
+      :visible="alertaVisible"
+      :titulo="alertaTitulo"
+      :mensaje="alertaMensaje"
+      :tipo="alertaTipo"
+      @close="manejarCierreAlerta"
+    />
     <h2>Definir precio de venta</h2>
     <div class="card p-4">
       <div class="mb-3">
@@ -71,10 +103,12 @@ onMounted(cargar)
       </div>
       <div class="mb-3">
         <label>Precio de venta</label>
-        <input :value="precioVenta" class="form-control" disabled />
+        <input :value="formatearValor(precioVenta)" class="form-control" disabled />
       </div>
       <button class="btn btn-success" @click="guardar()">Guardar</button>
-      <button class="btn btn-secondary mt-2" @click="router.push({name: 'vehiculos'})">Volver</button>
+      <button class="btn btn-secondary mt-2" @click="router.push({ name: 'vehiculos' })">
+        Volver
+      </button>
     </div>
   </div>
 </template>

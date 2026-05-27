@@ -34,11 +34,43 @@ const cargarCuotas = async () => {
   try {
     const res = await api.get(`/cuotas/venta/${idVenta}`)
     cuotas.value = res.data
+
+    await verificarVentaCompletada()
   } catch (error) {
     alertaTitulo.value = 'Error'
     alertaMensaje.value = 'Error al cargar las cuotas'
     alertaTipo.value = 'error'
     alertaVisible.value = true
+  }
+}
+//Cuando las cuotas todas esten pagadas
+const marcarVentaPagada = async () => {
+  try {
+    await api.post(`/ventas/pagar/${idVenta}`)
+    alertaTitulo.value = 'Éxito'
+    alertaMensaje.value = 'Venta marcada como PAGADA'
+    alertaTipo.value = 'success'
+    alertaVisible.value = true
+  } catch (error: any) {
+    alertaTitulo.value = 'Error'
+    alertaMensaje.value = error?.response?.data?.message || 'Error al actualizar venta'
+    alertaTipo.value = 'error'
+    alertaVisible.value = true
+  }
+}
+
+const verificarVentaCompletada = async () => {
+  try {
+    if (cuotas.value.length === 0) return
+
+    const todasPagadas = cuotas.value.every((c) => c.estado === 'PAGADO')
+    if (!todasPagadas) return
+    const venta = await api.get(`/ventas/${idVenta}`)
+    if (todasPagadas && venta.data.estado == 'PENDIENTE') {
+      await marcarVentaPagada()
+    }
+  } catch (error: any) {
+    alert('Error al verificar estado de venta completada')
   }
 }
 

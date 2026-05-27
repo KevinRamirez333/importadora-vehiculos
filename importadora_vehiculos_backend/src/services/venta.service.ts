@@ -418,6 +418,11 @@ doc.text(
         nombreArchivo
     }
 }
+async cambiarEstadoPagado(id:number){
+    if(!id){
+        throw new Error('ID de venta es requerido')
 
-
+    }
+    await this.ventaRepo.EstadoPagadoVenta(id)
+    }
 }

@@ -74,12 +74,16 @@ const menuOptions = computed(() => {
     { name: 'Cambiar contraseña', route: { name: 'cambiar-password' } },
   ]
 
+
   if (rol === 'ADMIN') {
     return [modules.vehiculos, modules.clientes, modules.ventas, modules.admin, ...base]
   }
+  if(rol==='SUPERVISOR'){
+    return [modules.clientes,modules.vehiculos,modules.ventas, ...base]
+  }
 
   if (rol === 'VENDEDOR') {
-    return [...base, modules.vehiculos, modules.clientes]
+    return [ modules.ventas, modules.clientes, { name: 'Vehículos', route: { name: 'vehiculos-vendedor' } },...base]
   }
 
   return base

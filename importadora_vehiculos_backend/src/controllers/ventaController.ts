@@ -102,4 +102,15 @@ public async generarComprobante(req: Request, res: Response) {
             res.status(500).send({message:error.message})
         }
     }
+    @POST()
+    @route('/pagar/:id')
+    public async cambiarEstadoPagado(req:Request,res:Response){
+        try{
+            const id = Number(req.params.id)
+            await this.service.cambiarEstadoPagado(id)
+            res.status(200).send({message:'Venta marcada como PAGADA'})
+        }catch(error:any){
+            res.status(500).send({message:error.message})
+        }
+    }
 }

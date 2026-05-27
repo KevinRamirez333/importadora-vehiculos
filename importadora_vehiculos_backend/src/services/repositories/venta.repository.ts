@@ -9,4 +9,5 @@ export interface VentaRepository{
     findByVin(vin:string):Promise<Venta|null>
     anularVenta(id:number): Promise<void>
     buscarVentasPorCliente(id_cliente:number):Promise<any[]>
+    EstadoPagadoVenta(id:number):Promise<void>
 }

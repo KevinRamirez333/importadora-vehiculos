@@ -33,6 +33,7 @@ import ComprasCliente from '@/views/ventas/ComprasCliente.vue'
 import ListaVentas from '@/views/ventas/ListaVentas.vue'
 import ListaCuota from '@/views/cuotas/ListaCuota.vue'
 import Panel from '@/views/panel/Panel.vue'
+import VehiculosVendedor from '@/views/vehiculos/VehiculosVendedor.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -96,6 +97,12 @@ const router = createRouter({
           path: 'vehiculos/precio-venta/:vin',
           name: 'precio-venta',
           component: DefinirPrecioVenta,
+        },
+        {
+          path: 'vehiculos/vendedor',
+          name: 'vehiculos-vendedor',
+          component: VehiculosVendedor,
+          
         },
         {
           path: 'marcas',

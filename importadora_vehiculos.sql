@@ -71,8 +71,7 @@ create table ingreso_vehiculo(
   constraint fk_vin_vehiculo foreign key (vin) references vehiculo(vin),
   constraint fk_id_cliente_ingreso foreign key (id_cliente) references cliente(id_cliente)
 );
-alter table ingreso_vehiculo
-add column estado_ingreso ENUM('ACTIVO','ANULADO') DEFAULT 'ACTIVO';
+
 
 
 create table cliente(

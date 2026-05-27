@@ -85,4 +85,8 @@ WHERE v.id_venta = ?`
       const [rows]:any = await connector.query(query,[id_cliente])
       return rows
     }
+    async EstadoPagadoVenta(id: number): Promise<void> {
+        const query = `update venta set estado='PAGADO' where id_venta=?`
+        await connector.query(query, [id])
+    }
 }
