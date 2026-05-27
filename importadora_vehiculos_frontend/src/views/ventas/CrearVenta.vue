@@ -88,11 +88,17 @@ const buscarPorVin = async () => {
     placaVehiculo.value = data.placa
     nombreVehiculo.value = data.nombre
     precio_venta_mostrar.value = data.precio_venta
-    alert('Vehículo encontrado correctamente')
+    alertaTitulo.value = 'Éxito'
+    alertaMensaje.value = 'Vehículo encontrado correctamente'
+    alertaTipo.value = 'success'
+    alertaVisible.value = true
   } catch (error: any) {
     nombreVehiculo.value = ''
     vin.value = ''
-    alert(error.response?.data?.message)
+    alertaTitulo.value = 'Error'
+    alertaMensaje.value = error.response?.data?.message || 'Error al buscar vehículo'
+    alertaTipo.value = 'error'
+    alertaVisible.value = true
   }
 }
 
@@ -104,17 +110,30 @@ const buscarCliente = async () => {
     id_cliente.value = data.id_cliente
     nombreCliente.value = data.nombre
     apellidoCliente.value = data.apellido
-    alert('Cliente encontrado correctamente')
+    alertaTitulo.value = 'Éxito'
+    alertaMensaje.value = 'Cliente encontrado correctamente'
+    alertaTipo.value = 'success'
+    alertaVisible.value = true
   } catch (error: any) {
     id_cliente.value = 0
     nombreCliente.value = ''
-    alert(error.response?.data?.message)
+    alertaTitulo.value = 'Error'
+    alertaMensaje.value = error.response?.data?.message || 'Error al buscar cliente'
+    alertaTipo.value = 'error'
+    alertaVisible.value = true
   }
 }
 </script>
 
 <template>
   <div class="container mt-4">
+    <AlertaBase
+      :visible="alertaVisible"
+      :titulo="alertaTitulo"
+      :mensaje="alertaMensaje"
+      :tipo="alertaTipo"
+      @close="alertaVisible = false"
+    />
     <h2>Registrar venta</h2>
 
     <div class="card p-4">
