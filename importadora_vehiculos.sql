@@ -59,20 +59,6 @@ constraint fk_id_estado foreign key (id_estado) references estado(id_estado),
 constraint fk_id_modelo foreign key(id_modelo) references modelo(id_modelo)
 );
 
-create table ingreso_vehiculo(
-  id_ingreso int auto_increment,
-  vin varchar(20),
-  tipo_ingreso enum('IMPORTACION','COMPRA_LOCAL','RECIBIDO_COMO_PAGO'),
-  fecha date,
-  id_cliente int null,
-  valor_ingreso decimal(12,2),
-  estado_ingreso ENUM('ACTIVO','ANULADO') DEFAULT 'ACTIVO',
-  constraint pk_id_ingreso primary key (id_ingreso),
-  constraint fk_vin_vehiculo foreign key (vin) references vehiculo(vin),
-  constraint fk_id_cliente_ingreso foreign key (id_cliente) references cliente(id_cliente)
-);
-
-
 
 create table cliente(
   id_cliente int auto_increment,
@@ -84,6 +70,19 @@ create table cliente(
   direccion varchar(30),
   estado boolean default true,
 constraint pk_id_cliente primary key (id_cliente)
+);
+
+create table ingreso_vehiculo(
+  id_ingreso int auto_increment,
+  vin varchar(20),
+  tipo_ingreso enum('IMPORTACION','COMPRA_LOCAL','RECIBIDO_COMO_PAGO'),
+  fecha date,
+  id_cliente int null,
+  valor_ingreso decimal(12,2),
+  estado_ingreso ENUM('ACTIVO','ANULADO') DEFAULT 'ACTIVO',
+  constraint pk_id_ingreso primary key (id_ingreso),
+  constraint fk_vin_vehiculo foreign key (vin) references vehiculo(vin),
+  constraint fk_id_cliente_ingreso foreign key (id_cliente) references cliente(id_cliente)
 );
 
 create table importacion(
