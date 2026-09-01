@@ -38,6 +38,7 @@ const enganche = computed(() => {
   return redondearDecimales(precioFinanciado.value * porcentajeEnganche)
 })
 
+
 const saldoFinanciar = computed(() => {
   return redondearDecimales(precioFinanciado.value - enganche.value)
 })

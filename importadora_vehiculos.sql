@@ -137,7 +137,13 @@ create table venta_cuota (
   constraint fk_id_venta foreign key(id_venta) references venta(id_venta) 
 );
 
+select * from marca;
+select * from modelo;
+select * from estado;
 
+select * from ingreso_vehiculo;
 
+select * from cliente;
 
+select * from usuario;
 

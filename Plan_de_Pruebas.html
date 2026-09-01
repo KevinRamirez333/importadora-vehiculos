@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 12pt; margin: 2.5cm; color: #000; }
+    h1 { font-size: 20pt; font-weight: bold; color: #1F3864; text-align: center; margin-bottom: 4pt; }
+    h2 { font-size: 14pt; font-weight: bold; color: #1F3864; margin-top: 24pt; margin-bottom: 8pt; border-bottom: 2px solid #1F3864; padding-bottom: 4pt; }
+    h3 { font-size: 12pt; font-weight: bold; color: #2E5090; margin-top: 14pt; margin-bottom: 4pt; }
+    p { margin: 4pt 0 8pt 0; line-height: 1.4; }
+    .subtitle { text-align: center; font-size: 13pt; color: #444; margin-bottom: 6pt; }
+    .date { text-align: center; font-size: 11pt; color: #666; margin-bottom: 30pt; }
+    table { border-collapse: collapse; width: 100%; margin-top: 8pt; margin-bottom: 16pt; font-size: 11pt; }
+    th { background-color: #1F3864; color: #fff; padding: 7pt 10pt; text-align: left; }
+    td { border: 1px solid #CCCCCC; padding: 6pt 10pt; vertical-align: top; }
+    tr:nth-child(even) td { background-color: #F0F4FA; }
+    .badge { display: inline-block; padding: 2pt 8pt; border-radius: 3pt; font-size: 10pt; font-weight: bold; }
+    .unit { background-color: #D6E4F0; color: #1A5276; }
+    .integ { background-color: #D5F5E3; color: #1E8449; }
+    .section-intro { background-color: #EBF5FB; border-left: 4px solid #2874A6; padding: 8pt 12pt; margin-bottom: 16pt; font-size: 11pt; }
+    .prueba-card { border: 1px solid #D5D8DC; border-radius: 4pt; padding: 12pt; margin-bottom: 14pt; }
+    .prueba-card h3 { margin-top: 0; }
+    .campo { margin-bottom: 5pt; }
+    .campo strong { color: #1F3864; min-width: 130pt; display: inline-block; }
+    hr { border: none; border-top: 1px solid #D5D8DC; margin: 20pt 0; }
+  </style>
+</head>
+<body>
+
+  <h1>Plan de Pruebas</h1>
+  <p class="subtitle">Sistema de Gestión — Importadora de Vehículos</p>
+  <p class="date">Versión 1.0 &nbsp;|&nbsp; Junio 2026</p>
+
+  <h2>1. Introducción</h2>
+  <p>El presente documento describe el plan de pruebas definido para el sistema, detallando las pruebas unitarias e integración identificadas para garantizar la calidad y correcto funcionamiento de los módulos desarrollados.</p>
+  <p>El sistema está compuesto por un <strong>backend en Node.js + TypeScript</strong> organizado en capas (Services, Controllers, Repository) y un <strong>frontend en Vue.js + TypeScript</strong> organizado en Views, Helpers y Components.</p>
+
+  <h2>2. Alcance</h2>
+  <p>Las pruebas cubren los siguientes niveles:</p>
+  <table>
+    <tr>
+      <th>Nivel</th>
+      <th>Cantidad</th>
+      <th>Capa objetivo</th>
+    </tr>
+    <tr>
+      <td><span class="badge unit">Unitaria</span></td>
+      <td>5 pruebas</td>
+      <td>Services (backend) y Helpers (frontend)</td>
+    </tr>
+    <tr>
+      <td><span class="badge integ">Integración</span></td>
+      <td>5 pruebas</td>
+      <td>Controller + Service + Repository / View + Components</td>
+    </tr>
+  </table>
+
+  <h2>3. Pruebas Unitarias</h2>
+  <div class="section-intro">
+    Las pruebas unitarias validan el comportamiento de una unidad de código de forma aislada, reemplazando dependencias externas con mocks o stubs. Se enfocan principalmente en la capa <strong>Services</strong> del backend y en las funciones <strong>Helpers</strong> del frontend.
+  </div>
+
+  <!-- PU-01 -->
+  <div class="prueba-card">
+    <h3><span class="badge unit">PU-01</span> &nbsp; Cálculo del precio total de costos de un vehículo (Service)</h3>
+    <div class="campo"><strong>Módulo:</strong> Backend — Services</div>
+    <div class="campo"><strong>Descripción:</strong> Verificar que el servicio calcula correctamente el precio total de un vehículo sumando todos sus costos asociados: taller, traspaso, impuesto, placas y otros. El resultado debe ser la suma exacta de todos esos conceptos.</div>
+    <div class="campo"><strong>Precondiciones:</strong> Se proporciona un objeto con los valores individuales de cada costo (taller, traspaso, impuesto, placas, otro). No requiere conexión a base de datos (se usa mock del repositorio).</div>
+    <div class="campo"><strong>Criterio de éxito:</strong> El precio total retornado coincide con la suma de taller + traspaso + impuesto + placas + otro para distintas combinaciones de valores de entrada, incluyendo el caso donde alguno de los conceptos es cero.</div>
+    <div class="campo"><strong>Herramienta sugerida:</strong> Jest + ts-jest</div>
+  </div>
+
+  <!-- PU-02 -->
+  <div class="prueba-card">
+    <h3><span class="badge unit">PU-02</span> &nbsp; Verificación de disponibilidad del vehículo antes de realizar una venta (Service)</h3>
+    <div class="campo"><strong>Módulo:</strong> Backend — Services</div>
+    <div class="campo"><strong>Descripción:</strong> Verificar que el servicio de ventas, antes de procesar o al momento de registrar una venta, consulta el estado del vehículo y determina si está disponible para vender. Si el vehículo no está disponible (ya vendido, anulado u otro estado que lo impida), el servicio debe rechazar la operación.</div>
+    <div class="campo"><strong>Precondiciones:</strong> El repositorio de vehículos se reemplaza con un mock que retorna distintos estados del vehículo (disponible / no disponible).</div>
+    <div class="campo"><strong>Criterio de éxito:</strong> Cuando el vehículo está disponible, el servicio permite continuar con el proceso de venta. Cuando no está disponible, el servicio lanza la excepción o error correspondiente sin registrar la venta.</div>
+    <div class="campo"><strong>Herramienta sugerida:</strong> Jest + ts-jest</div>
+  </div>
+
+  <!-- PU-03 -->
+  <div class="prueba-card">
+    <h3><span class="badge unit">PU-03</span> &nbsp; Exclusión de ingresos anulados en el cálculo del precio de venta (Service)</h3>
+    <div class="campo"><strong>Módulo:</strong> Backend — Services</div>
+    <div class="campo"><strong>Descripción:</strong> Verificar que el servicio, al calcular el precio de venta de un vehículo, únicamente toma en cuenta los registros de ingreso que están activos/disponibles. Los registros de ingreso que se encuentren anulados (desactivados) deben ser ignorados en el cálculo, aunque cuenten con precio de ingreso registrado.</div>
+    <div class="campo"><strong>Precondiciones:</strong> Se proporciona al servicio una lista de registros de ingreso del vehículo, donde algunos tienen estado activo y otros están anulados, todos con precio de ingreso definido. El repositorio se reemplaza con un mock.</div>
+    <div class="campo"><strong>Criterio de éxito:</strong> El precio resultante corresponde únicamente a la suma o cálculo sobre los registros activos. Los registros anulados no modifican el resultado, independientemente del precio de ingreso que tengan registrado.</div>
+    <div class="campo"><strong>Herramienta sugerida:</strong> Jest + ts-jest</div>
+  </div>
+
+  <!-- PU-04 -->
+  <div class="prueba-card">
+    <h3><span class="badge unit">PU-04</span> &nbsp; Formateo de moneda en helper del frontend (Helper)</h3>
+    <div class="campo"><strong>Módulo:</strong> Frontend — Helpers</div>
+    <div class="campo"><strong>Descripción:</strong> Verificar que la función helper <code>formatCurrency</code> transforma correctamente un valor numérico al formato de moneda local (ej. "Q 1,500.00"), incluyendo casos borde como valores negativos y cero.</div>
+    <div class="campo"><strong>Precondiciones:</strong> Función pura sin dependencias externas.</div>
+    <div class="campo"><strong>Criterio de éxito:</strong> La cadena retornada coincide con el formato esperado para cada valor de entrada probado.</div>
+    <div class="campo"><strong>Herramienta sugerida:</strong> Vitest</div>
+  </div>
+
+  <!-- PU-05 -->
+  <div class="prueba-card">
+    <h3><span class="badge unit">PU-05</span> &nbsp; Validación de formato de fecha en helper (Helper)</h3>
+    <div class="campo"><strong>Módulo:</strong> Frontend — Helpers</div>
+    <div class="campo"><strong>Descripción:</strong> Verificar que el helper <code>formatDate</code> convierte una cadena ISO-8601 a un formato legible (ej. "01/06/2026"), y que retorna un valor por defecto cuando recibe una fecha inválida o nula.</div>
+    <div class="campo"><strong>Precondiciones:</strong> Función pura, se prueba con fechas válidas, inválidas y valor nulo.</div>
+    <div class="campo"><strong>Criterio de éxito:</strong> Salida formateada correcta para fechas válidas; cadena de fallback para entradas inválidas.</div>
+    <div class="campo"><strong>Herramienta sugerida:</strong> Vitest</div>
+  </div>
+
+  <h2>4. Pruebas de Integración</h2>
+  <div class="section-intro">
+    Las pruebas de integración validan la comunicación entre múltiples capas o módulos del sistema. En el backend comprueban el flujo completo Controller → Service → Repository; en el frontend validan la interacción entre Views y Components.
+  </div>
+
+  <!-- PI-01 -->
+  <div class="prueba-card">
+    <h3><span class="badge integ">PI-01</span> &nbsp; Registro de vehículo (Controller → Service → Repository)</h3>
+    <div class="campo"><strong>Módulo:</strong> Backend — Controller / Service / Repository</div>
+    <div class="campo"><strong>Descripción:</strong> Verificar que al realizar una petición POST al endpoint de creación de vehículos, el controller delega correctamente al service, y este persiste la entidad mediante el repository, retornando la entidad creada con su ID asignado.</div>
+    <div class="campo"><strong>Precondiciones:</strong> Base de datos de prueba inicializada con schema limpio. Datos de vehículo válidos en el cuerpo de la petición.</div>
+    <div class="campo"><strong>Criterio de éxito:</strong> Respuesta HTTP 201 con el cuerpo que incluye el ID generado y los datos enviados. El registro existe en la base de datos de prueba.</div>
+    <div class="campo"><strong>Herramienta sugerida:</strong> Supertest + Jest, base de datos SQLite en memoria o contenedor Docker</div>
+  </div>
+
+  <!-- PI-02 -->
+  <div class="prueba-card">
+    <h3><span class="badge integ">PI-02</span> &nbsp; Búsqueda y listado correcto de vehículos (Controller → Service → Repository)</h3>
+    <div class="campo"><strong>Módulo:</strong> Backend — Controller / Service / Repository</div>
+    <div class="campo"><strong>Descripción:</strong> Verificar que el endpoint GET de vehículos, al recibir criterios de búsqueda (como marca, modelo u otro filtro disponible), retorna correctamente todos los vehículos que coincidan con dichos criterios, pasando por las tres capas sin pérdida ni alteración de datos.</div>
+    <div class="campo"><strong>Precondiciones:</strong> Base de datos de prueba con varios vehículos pre-insertados de distintas marcas y modelos. Se realizan peticiones con diferentes criterios de búsqueda.</div>
+    <div class="campo"><strong>Criterio de éxito:</strong> Respuesta HTTP 200 con todos los vehículos que coinciden con el criterio de búsqueda, sin registros de más ni de menos. Una búsqueda sin filtros retorna todos los vehículos disponibles.</div>
+    <div class="campo"><strong>Herramienta sugerida:</strong> Supertest + Jest</div>
+  </div>
+
+  <!-- PI-03 -->
+  <div class="prueba-card">
+    <h3><span class="badge integ">PI-03</span> &nbsp; Creación de vehículo y visualización correcta en el frontend (Backend → Frontend)</h3>
+    <div class="campo"><strong>Módulo:</strong> Backend (Controller / Service / Repository) + Frontend (View)</div>
+    <div class="campo"><strong>Descripción:</strong> Verificar el flujo completo desde la creación de un vehículo en el backend hasta su correcta visualización en el frontend. Al registrar un vehículo mediante el endpoint POST, el registro debe persistirse y posteriormente la vista del frontend debe ser capaz de recuperarlo y mostrarlo con todos sus datos correctamente.</div>
+    <div class="campo"><strong>Precondiciones:</strong> Backend levantado con base de datos de prueba. Frontend con la API apuntando al entorno de prueba. Datos válidos del vehículo preparados para el registro.</div>
+    <div class="campo"><strong>Criterio de éxito:</strong> El vehículo se crea exitosamente (respuesta HTTP 201). Al consultar el listado o la vista correspondiente en el frontend, el vehículo recién creado aparece con todos los campos correctamente desplegados, sin datos faltantes ni transformaciones incorrectas.</div>
+    <div class="campo"><strong>Herramienta sugerida:</strong> Supertest + Jest (backend) / Vitest + Vue Test Utils (frontend)</div>
+  </div>
+
+  <!-- PI-04 -->
+  <div class="prueba-card">
+    <h3><span class="badge integ">PI-04</span> &nbsp; Vista de costos de vehículo con componente de alerta ante error (View → Component)</h3>
+    <div class="campo"><strong>Módulo:</strong> Frontend — Views / Components</div>
+    <div class="campo"><strong>Descripción:</strong> Verificar que la vista de costos del vehículo, al recibir un error en la carga de datos desde la API, muestra correctamente el componente de alerta modal con el mensaje de error correspondiente, sin romper la vista ni dejar al usuario sin retroalimentación.</div>
+    <div class="campo"><strong>Precondiciones:</strong> La llamada a la API desde la vista de costos se intercepta con un mock que retorna error. Componente de alerta registrado y disponible en la aplicación.</div>
+    <div class="campo"><strong>Criterio de éxito:</strong> El componente de alerta es visible en el DOM con el mensaje de error esperado después de que la petición falla. La vista no muestra datos parciales ni queda en estado de carga indefinido.</div>
+    <div class="campo"><strong>Herramienta sugerida:</strong> Vitest + Vue Test Utils</div>
+  </div>
+
+  <!-- PI-05 -->
+  <div class="prueba-card">
+    <h3><span class="badge integ">PI-05</span> &nbsp; Flujo de login y redirección protegida (View → Helper → API)</h3>
+    <div class="campo"><strong>Módulo:</strong> Frontend — Views / Helpers</div>
+    <div class="campo"><strong>Descripción:</strong> Verificar que al ingresar credenciales correctas en la vista de login, el helper de autenticación almacena el token recibido y el router redirige al usuario a la vista principal protegida. Ante credenciales incorrectas, se muestra el componente de alerta de error.</div>
+    <div class="campo"><strong>Precondiciones:</strong> Endpoint de autenticación del backend mockeado con respuestas de éxito y error. Vue Router configurado con guardias de navegación.</div>
+    <div class="campo"><strong>Criterio de éxito:</strong> Credenciales válidas redirigen a la ruta protegida y el token se almacena. Credenciales inválidas mantienen al usuario en la vista de login y muestran la alerta de error.</div>
+    <div class="campo"><strong>Herramienta sugerida:</strong> Vitest + Vue Test Utils + Vue Router</div>
+  </div>
+
+  <h2>5. Resumen</h2>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Tipo</th>
+      <th>Capa</th>
+    </tr>
+    <tr>
+      <td>PU-01</td>
+      <td>Cálculo del precio total de costos de un vehículo</td>
+      <td><span class="badge unit">Unitaria</span></td>
+      <td>Service (Backend)</td>
+    </tr>
+    <tr>
+      <td>PU-02</td>
+      <td>Verificación de disponibilidad antes de realizar una venta</td>
+      <td><span class="badge unit">Unitaria</span></td>
+      <td>Service (Backend)</td>
+    </tr>
+    <tr>
+      <td>PU-03</td>
+      <td>Exclusión de ingresos anulados en el cálculo del precio de venta</td>
+      <td><span class="badge unit">Unitaria</span></td>
+      <td>Service (Backend)</td>
+    </tr>
+    <tr>
+      <td>PU-04</td>
+      <td>Formateo de moneda en helper</td>
+      <td><span class="badge unit">Unitaria</span></td>
+      <td>Helper (Frontend)</td>
+    </tr>
+    <tr>
+      <td>PU-05</td>
+      <td>Validación de formato de fecha en helper</td>
+      <td><span class="badge unit">Unitaria</span></td>
+      <td>Helper (Frontend)</td>
+    </tr>
+    <tr>
+      <td>PI-01</td>
+      <td>Registro de vehículo (flujo completo)</td>
+      <td><span class="badge integ">Integración</span></td>
+      <td>Controller → Service → Repository</td>
+    </tr>
+    <tr>
+      <td>PI-02</td>
+      <td>Búsqueda y listado correcto de vehículos</td>
+      <td><span class="badge integ">Integración</span></td>
+      <td>Controller → Service → Repository</td>
+    </tr>
+    <tr>
+      <td>PI-03</td>
+      <td>Creación de vehículo y visualización correcta en el frontend</td>
+      <td><span class="badge integ">Integración</span></td>
+      <td>Backend → Frontend</td>
+    </tr>
+    <tr>
+      <td>PI-04</td>
+      <td>Vista de costos de vehículo con componente de alerta</td>
+      <td><span class="badge integ">Integración</span></td>
+      <td>View → Component (Frontend)</td>
+    </tr>
+    <tr>
+      <td>PI-05</td>
+      <td>Flujo de login y redirección protegida</td>
+      <td><span class="badge integ">Integración</span></td>
+      <td>View → Helper → API (Frontend)</td>
+    </tr>
+  </table>
+
+</body>
+</html>
